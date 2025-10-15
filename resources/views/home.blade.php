@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Last SENAI | Selecione seu Herói</title>
+    <title>Caverna Sombria | Selecione seu Herói</title>
 
     <link rel="icon" href="{{ asset('img/logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,13 +12,11 @@
     
     <style>
         :root {
-            --bg-dark: #1a1c2c; /* Fundo principal escuro, pode ser um azul/cinza quase preto */
-            --ui-main: #5a3a2b; /* Marrom principal da UI */
-            --ui-border-light: #a18c7c; /* Marrom mais claro para bordas e destaques */
-            --ui-border-dark: #3f2a1f; /* Marrom mais escuro para bordas */
+            --ui-main: #000000; /* Marrom principal da UI */
+            --ui-border-light: #000000; /* Marrom mais claro para bordas e destaques */
             --text-light: #ffffff; /* Branco para o texto */
-            --text-highlight: #ffc800; /* Amarelo para destaques (ouro) */
-            --danger-color: #e53935; /* Vermelho para ações de perigo */
+            --text-highlight: #ffffff; /* Amarelo para destaques (ouro) */
+            --danger-color: #000000; /* Vermelho para ações de perigo */
             --success-color: #7cb342; /* Verde para ações de sucesso */
         }
 
@@ -28,8 +26,8 @@
         body {
             margin: 0; padding: 20px; font-family: 'Press Start 2P', cursive;
             background-color: var(--bg-dark);
-            background-image: url("{{ asset('img/giphy.gif') }}"); /* Mantenha seu GIF de fundo */
-            background-size: cover; background-blend-mode: multiply; /* Para escurecer o GIF */
+            background: url('https://i.redd.it/86qeqi3lbu8c1.gif') no-repeat center center fixed;
+            background-size: cover;
             color: var(--text-light); text-align: center;
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             overflow-x: hidden;
@@ -54,10 +52,12 @@
         .game-container {
             position: relative; z-index: 2; padding: clamp(20px, 4vw, 30px);
             max-width: 800px; width: 95%; 
-            background: var(--ui-main);
-            border: 4px solid var(--ui-border-dark);
-            box-shadow: inset 0 0 0 4px var(--ui-border-light), 0 10px 30px rgba(0,0,0,0.5);
-            /* Borda pixelada tripla */
+            
+            /* --- ALTERAÇÃO PRINCIPAL AQUI --- */
+            background: transparent; /* Remove o fundo marrom */
+            border: none;            /* Remove a borda */
+            box-shadow: none;        /* Remove a sombra da borda */
+            /* --- FIM DA ALTERAÇÃO --- */
         }
 
         h1 {
@@ -189,12 +189,12 @@
     <div class="preloader" id="preloader"><div class="preloader__spinner"></div><p>CARREGANDO...</p></div>
 
     <main class="game-container">
-        <h1>THE LAST SENAI</h1>
+        <h1>CAVERNA SOMBRIA</h1>
         <div class="btn-group">
-            <a href="{{ route('character.create') }}" class="btn">Novo Jogo</a>
+            <a href="{{ route('character.create') }}" class="btn">START GAME</a>
             <button id="toggleListBtn" class="btn" aria-controls="characterList" aria-expanded="false"
                     data-open-text="Carregar Jogo" data-close-text="Fechar">
-                Carregar Jogo
+                LOAD GAME
             </button>
         </div>
 
@@ -224,7 +224,7 @@
     
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
-            <h3>RENOMEAR HEROI</h3>
+            <h3>RENOMEAR PERSONAGEM</h3>
             <input type="text" id="editNameInput" class="modal-input" placeholder="NOVO NOME...">
             <div class="modal-actions">
                 <button class="btn btn--secondary" data-close-modal>Voltar</button>

@@ -122,7 +122,7 @@
 <main class="dialog-box">
     <header class="dialog-header">
         <img src="{{ asset('img/avatar-4.png') }}" class="npc-avatar" alt="Mestre do Jogo">
-        <h1 class="dialog-title">Mestre Ramon</h1>
+        <h1 class="dialog-title">Mestre Splinter</h1>
     </header>
     
     <div class="dialog-content" id="dialogContent">
