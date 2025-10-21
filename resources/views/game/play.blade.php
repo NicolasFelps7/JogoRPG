@@ -14,7 +14,7 @@
     /* Estilos gerais, intro, efeitos, etc. (sem alterações) */
     :root { --bg-dark: #1a1c2c; --ui-main: #5a3a2b; --ui-border-light: #a18c7c; --ui-border-dark: #3f2a1f; --text-light: #ffffff; --text-highlight: #94e5ff; --hp-color: #70d870; --mp-color: #1e88e5; --xp-color: #fdd835; --dialog-bg: #e0e0e0; --dialog-border: #606060; --dialog-text: #303030; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Press Start 2P', cursive; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://img.itch.zone/aW1nLzc5MjM4MzIuZ2lm/original/y%2FlIme.gif') no-repeat center center; background-size: cover; background-blend-mode: multiply; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; color: var(--text-light); image-rendering: pixelated; overflow: hidden; position: relative; }
+    body { font-family: 'Press Start 2P', cursive; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.redd.it/enk0oh0syll51.gif') no-repeat center center; background-size: cover; background-blend-mode: multiply; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; color: var(--text-light); image-rendering: pixelated; overflow: hidden; position: relative; }
     #story-intro { position: fixed; inset: 0; background-color: #000; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 200; padding: 20px; opacity: 1; transition: none; overflow: hidden; }
     #story-intro.hide-intro-animation { animation: hide-intro-up 1.5s forwards ease-in-out; }
     @keyframes hide-intro-up { 0% { transform: translateY(0); opacity: 1; } 50% { opacity: 0.5; } 100% { transform: translateY(-100%); opacity: 0; visibility: hidden; } }
@@ -187,8 +187,8 @@ const Game = {
     state: {
         playerTeam: [
             { id: 1, name: "{{ $character->name }}", hp: parseInt("{{ $character->hp }}"), maxHp: parseInt("{{ $character->max_hp }}"), mp: parseInt("{{ $character->mp }}"), maxMp: parseInt("{{ $character->max_mp }}"), attack: parseInt("{{ $character->attack }}"), defense: parseInt("{{ $character->defense }}"), sp_attack: parseInt("{{ $character->special_attack }}"), sp_defense: parseInt("{{ $character->special_defense }}"), speed: parseInt("{{ $character->speed }}"), level: parseInt("{{ $character->level }}"), xp: parseInt("{{ $character->exp ?? 0 }}"), gold: parseInt("{{ $character->gold ?? 0 }}"), xpToNextLevel: 100, isFainted: false, sprite: "{{ asset($character->avatar) }}" },
-            { id: 2, name: "CHARMANDER", hp: 39, maxHp: 39, mp: 20, maxMp: 20, attack: 12, defense: 8, sp_attack: 15, sp_defense: 10, speed: 13, level: 5, xp: 0, xpToNextLevel: 50, isFainted: false, sprite: 'https://play.pokemonshowdown.com/sprites/gen3/charmander.gif'},
-            { id: 3, name: "PIDGEY", hp: 0, maxHp: 40, mp: 15, maxMp: 15, attack: 10, defense: 9, sp_attack: 8, sp_defense: 8, speed: 15, level: 5, xp: 0, xpToNextLevel: 50, isFainted: true, sprite: 'https://play.pokemonshowdown.com/sprites/gen3/pidgey.gif'}
+            { id: 2, name: "RAICHU", hp: 200, maxHp: 250, mp: 100, maxMp: 200, attack: 200, defense: 20, sp_attack: 8, sp_defense: 8, speed: 10, level: 20, xp: 10, xpToNextLevel: 80, isFainted: false, sprite: 'https://pa1.aminoapps.com/6744/4f8b0d5940eda27c49a30dfa903c3c1321ac798d_hq.gif' },
+            { id: 3, name: "PIKACHU", hp: 200, maxHp: 250, mp: 100, maxMp: 200, attack: 200, defense: 9, sp_attack: 10, sp_defense: 9, speed: 18, level: 20, xp: 10, xpToNextLevel: 70, isFainted: false, sprite: 'https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif' }
         ],
         inventory: {
             potion: parseInt("{{ $character->potions ?? 0 }}", 10),

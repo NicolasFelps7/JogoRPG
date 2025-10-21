@@ -21,15 +21,16 @@
     #story-text { font-size: 1.5rem; line-height: 1.8; max-width: 800px; text-align: center; text-shadow: 2px 2px #000; z-index: 10; background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 5px; }
     #stage-title { font-size: 3rem; color: var(--text-highlight); margin-top: 40px; opacity: 0; transform: scale(0.5); text-shadow: 4px 4px #000; z-index: 10; }
     #stage-title.visible { animation: stage-intro 1.5s forwards; }
+    @keyframes stage-intro { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
     .battle-screen { visibility: hidden; opacity: 0; width: 100%; max-width: 1024px; height: 768px; position: relative; transition: opacity 1s; z-index: 2; background-color: transparent; border: none; overflow: hidden; }
     .battle-screen.visible { visibility: visible; opacity: 1; }
     .battle-arena { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 200px); }
     .battle-monster-sprite { width: 250px; height: 250px; object-fit: contain; }
-    #player-area { position: absolute; bottom: 40px; left: 10%; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    #enemy-area { position: absolute; top: 80px; right: 10%; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    #player-area { position: absolute; bottom: 40px; left: 10%; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 5; }
+    #enemy-area { position: absolute; top: 80px; right: 10%; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 5; }
     .status-box-pokemon { background: var(--dialog-bg); border: 2px solid var(--dialog-border); box-shadow: 2px 2px 0px rgba(0,0,0,0.3); padding: 8px 12px; color: var(--dialog-text); font-size: 0.8rem; z-index: 10; min-width: 220px; text-align: left; }
     .status-box-pokemon h2 { font-size: 0.9rem; margin-bottom: 3px; color: var(--dialog-text); text-shadow: none; }
-    .hp-bar-container { width: 100%; height: 10px; background-color: #505050; border: 1px solid var(--dialog-border); position: relative; margin-top: 3px; margin-bottom: 3px; }
+    .hp-bar-container { width: 100%; height: 10px; background-color: #505050; border: 1px solid var(--dialog-border); position: relative; margin-top: 3px; margin-bottom: 3px; border-radius: 5px; overflow: hidden; }
     .hp-bar-fill { height: 100%; background: var(--hp-color); transition: width 0.5s ease-out; }
     .hp-bar-text { position: absolute; inset: 0; font-size: 0.6rem; color: white; text-shadow: 1px 1px #000; line-height: 8px; text-align: center; }
     .hp-bar-fill.mp { background: var(--mp-color); }
@@ -46,6 +47,8 @@
     .modal-box { background: var(--ui-main); border: 4px solid var(--ui-border-dark); box-shadow: inset 0 0 0 4px var(--ui-border-light); padding: 30px; max-width: 600px; width: 90%; color: var(--text-light); transform: scale(0.9); transition: transform 0.3s ease; text-align: center;}
     .modal-overlay.is-visible .modal-box { transform: scale(1); }
     .modal-box .btn { display: inline-block; padding: 10px 20px; background: var(--ui-border-dark); color: var(--text-light); text-decoration: none; margin-top: 20px; border: 2px solid var(--ui-border-light); font-family: 'Press Start 2P', cursive; }
+    .hidden { opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; } /* Delay visibility change */
+    .visible { opacity: 1; visibility: visible; transition: opacity 0.5s ease; }
 
     /* Estilos da Bolsa (Bag) */
     #bag-screen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 480px; background: none; display: none; z-index: 100; pointer-events: all; }
@@ -76,7 +79,7 @@
     .team-name-level { display: flex; justify-content: space-between; margin-bottom: 4px; }
     .team-hp-container { display: flex; align-items: center; margin-bottom: 2px; }
     .team-hp-label { background-color: #daac20; color: white; font-size: 0.7em; padding: 1px 3px; border-radius: 4px; margin-right: 4px; }
-    .team-hp-bar-background { flex-grow: 1; background-color: #555; border-radius: 5px; height: 8px; padding: 2px; border: 1px solid #333; }
+    .team-hp-bar-background { flex-grow: 1; background-color: #555; border-radius: 5px; height: 8px; padding: 2px; border: 1px solid #333; overflow: hidden; }
     .team-hp-bar-foreground { background-color: #30a850; height: 100%; border-radius: 3px; }
     .team-hp-values { text-align: right; font-size: 0.9em; }
     .team-dialog-box { background-color: #f8f8f8; border: 4px solid #9ca4a5; border-radius: 8px; padding: 12px; margin-top: 12px; color: #333; position: relative; min-height: 50px; display: flex; align-items: center; justify-content: space-between; }
@@ -85,20 +88,78 @@
     .team-action-btn.desistir { background-color: #e57373; border-color: #d32f2f; color: white; }
     .back-button { font-family: 'Press Start 2P', cursive; background-color: #dcdcdc; border: 2px solid #aaa; border-radius: 10px; padding: 5px 10px; font-size: 0.8em; cursor: pointer; }
     
-    /* // NOVO CÓDIGO - PASSO 1: ESTILO DO EFEITO DE FOGO */
-    .attack-effect {
-        position: absolute;
-        z-index: 100; /* Para garantir que fique na frente de outros elementos */
-        pointer-events: none; /* Para não interferir com cliques do mouse */
-        width: 150px; /* Ajuste o tamanho conforme o GIF */
-        height: 150px;
-        /* Animação para o efeito desaparecer suavemente */
-        animation: fadeOutEffect 0.5s forwards;
+    .attack-effect { position: absolute; z-index: 100; pointer-events: none; width: 150px; height: 150px; animation: fadeOutEffect 0.5s forwards; }
+    @keyframes fadeOutEffect { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.2); } }
+
+    /* ===== ANIMAÇÃO DE DANO (Estilo Clássico Aprimorado) ===== */
+    .battle-monster-sprite.take-damage {
+        animation: take-hit-classic 0.4s steps(2, end) infinite;
+    }
+    @keyframes take-hit-classic {
+      0%, 100% { opacity: 1; transform: translateX(0); }
+      50% { opacity: 0.2; transform: translateX(6px); }
     }
 
-    @keyframes fadeOutEffect {
-        from { opacity: 1; transform: scale(1); }
-        to { opacity: 0; transform: scale(1.2); }
+    /* ===== VENTO DE BATALHA ===== */
+    .wind-particle {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        opacity: 0;
+        animation: wind-flow linear infinite;
+        z-index: 1;
+        pointer-events: none;
+    }
+    @keyframes wind-flow {
+        0% { transform: translateX(-100px) translateY(0px) rotate(0deg); opacity: 0; }
+        20%, 80% { opacity: 0.7; }
+        100% { transform: translateX(1124px) translateY(40px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ===== ESTILOS PARA VITÓRIA E CRÉDITOS (REVISÃO FINAL) ===== */
+    #victory-sequence .victory-content { text-align: center; }
+    #victory-chest { width: 256px; height: 256px; }
+    #victory-reward-text { color: white; font-size: 1.5rem; margin-top: 20px; text-shadow: 2px 2px #000; }
+    
+    #credits-sequence { 
+        display: block; /* Garante que não use flex */
+        align-items: initial;
+        justify-content: initial;
+        background-color: #000; 
+        color: #fff; 
+        text-align: center; 
+        overflow: hidden; 
+    }
+    .credits-content {
+        position: absolute;
+        width: 90%; /* Ajustado para melhor responsividade */
+        max-width: 800px;
+        left: 50%;
+        transform: translateX(-50%); /* Apenas centraliza horizontalmente */
+        /* Animação controla a posição vertical */
+        animation: scroll-credits 50s linear forwards;
+    }
+
+    @keyframes scroll-credits {
+        from { top: 100vh; } /* Começa abaixo da tela */
+        to { top: -250vh; } /* Termina bem acima (ajuste se necessário) */
+    }
+    .credits-content h1 { font-size: 2.5rem; margin-bottom: 40px; color: var(--xp-color); }
+    .credits-content h2 { font-size: 1.5rem; margin-top: 30px; margin-bottom: 10px; color: var(--text-highlight); }
+    .credits-content p { font-size: 1.2rem; line-height: 1.6; }
+    
+    #end-game-menu {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        transition: opacity 1s ease 0.5s; /* Adiciona delay para garantir que apareça depois */
+    }
+    #end-game-menu h1 {
+        font-size: 3rem;
+        color: var(--xp-color);
+        margin-bottom: 20px;
     }
 
 </style>
@@ -144,6 +205,54 @@
 </div>
 <div class="modal-overlay" id="endgameModal"></div>
 
+<div id="victory-sequence" class="modal-overlay">
+    <div class="victory-content">
+        <img id="victory-chest" src="https://i.gifer.com/7H6T.gif" alt="Baú do Tesouro Abrindo">
+        <p id="victory-reward-text" class="hidden">Você ganhou 2x Pedra do Trovão!</p>
+    </div>
+</div>
+
+<div id="credits-sequence" class="modal-overlay">
+    <div class="credits-content">
+        <h1>JOGO RPG</h1>
+        <h2>- A JORNADA FINAL -</h2>
+        <div style="margin-top: 50px;">
+            <h2>Designer</h2>
+            <p>nicolas</p>
+        </div>
+        <div>
+            <h2>Desenvolvedores</h2>
+            <p>nicolas</p>
+            <p>victor</p>
+            <p>pietro</p>
+        </div>
+        <div>
+            <h2>Colaboradores</h2>
+            <p>Neil</p>
+        </div>
+        <div>
+            <h2>Agradecimentos Especiais</h2>
+            <p>Miguel</p>
+            <p>O Professor</p>
+            <p>ChatGPT</p>
+            <p>Gemini</p>
+        </div>
+        <div>
+            <h2>Assets e Inspiração</h2>
+            <p>Pokémon (Nintendo)</p>
+            <p>Final Fantasy (Square Enix)</p>
+        </div>
+        <div style="margin-top: 80px;">
+            <p>Obrigado por jogar!</p>
+        </div>
+    </div>
+    <div id="end-game-menu" class="hidden">
+        <h1>FIM</h1>
+        <a href="{{ route('home') }}" class="btn">VOLTAR AO INÍCIO</a>
+   </div>
+</div>
+
+
 <script>
 const Intro = {
     storyContainer: document.getElementById('story-intro'), storyTextEl: document.getElementById('story-text'), stageTitleEl: document.getElementById('stage-title'), battleScreenEl: document.querySelector('.battle-screen'), typewriter(text, i = 0) { if (i < text.length) { this.storyTextEl.innerHTML += text.charAt(i); setTimeout(() => this.typewriter(text, i + 1), 50); } else { setTimeout(() => this.showStageTitle(), 2000); } }, showStageTitle() { this.stageTitleEl.classList.add('visible'); setTimeout(() => this.hideIntro(), 2500); }, hideIntro() { this.storyContainer.classList.add('hide-intro-animation'); this.storyContainer.addEventListener('animationend', () => { this.storyContainer.remove(); this.showBattleScreen(); }, { once: true }); }, showBattleScreen() { this.battleScreenEl.classList.add('visible'); Game.init(); }, start() { this.typewriter(`APÓS UMA BATALHA ÉPICA, {{ $character->name }} DESCE MAIS AFUNDO NA CAVERNA SOMBRIA. E CHEGA NA PARTE DAS LAVAS, E NOVOS DESAFIOS O AGUARDAM...`); }
@@ -180,91 +289,22 @@ const Game = {
         potion: { name: "POÇÃO", description: "Restaura 50 de HP.", actionKey: 'potion' },
         pokeball: { name: "POKÉ BALL", description: "Tenta capturar um Pokémon.", actionKey: 'catch' },
         greatball: { name: "GREAT BALL", description: "Uma Poké Ball melhorada.", actionKey: 'catch' },
-        thunderstone: { name: "PEDRA DO TROVÃO", description: "Não pode ser usada em batalha.", actionKey: 'none' }
+        thunderstone: { name: "PEDRA DO TROVÃO", description: "Uma pedra peculiar que faz certos Pokémon evoluírem.", actionKey: 'none' }
     },
-    init() { this.sanitizeStats(); this.loadEnemy(); this.renderMenu(); this.updateUI(); this.setupKeyboardNavigation(); this.logMessage(`UM PODER ESMAGADOR... ${this.state.enemy.name.toUpperCase()} APARECE!`, 'log-system'); },
+    init() { this.sanitizeStats(); this.loadEnemy(); this.renderMenu(); this.updateUI(); this.setupKeyboardNavigation(); this.createWindEffect(); this.logMessage(`UM PODER ESMAGADOR... ${this.state.enemy.name.toUpperCase()} APARECE!`, 'log-system'); },
     renderMenu() { const grid = this.elements.player.actions; grid.innerHTML = ''; const menu = this.menus[this.state.menuState]; for (const key in menu) { const item = menu[key]; const el = document.createElement('div'); el.className = 'action-item'; el.textContent = item.name; if(key === 'bag') { el.textContent += ` (${Object.values(this.state.inventory).reduce((a, b) => a + b, 0)})`; } el.onclick = () => { if (item.type === 'submenu') { this.state.menuState = item.target; this.renderMenu(); } else if (item.type === 'open_bag') this.openBag(); else if (item.type === 'open_team_screen') this.openTeamScreen(); else if (item.type === 'back') { this.state.menuState = 'main'; this.renderMenu(); } else this.executeTurn(item.actionKey); }; grid.appendChild(el); } },
-    
-    // --- LÓGICA DA BOLSA ---
     openBag() { if(this.state.gameState !== 'PLAYER_TURN') return; this.setGameState('BAG_OPEN'); this.elements.bag.screen.style.display = 'block'; this.renderBag(); },
     closeBag() { this.elements.bag.screen.style.display = 'none'; this.setGameState('PLAYER_TURN'); this.renderMenu(); },
     renderBag() { const listEl = this.elements.bag.list; listEl.innerHTML = ''; const availableItems = Object.keys(this.state.inventory).filter(k => this.state.inventory[k] > 0); availableItems.forEach(key => { const item = this.items[key]; if(!item) return; const itemEl = document.createElement('div'); itemEl.className = 'bag-item'; itemEl.dataset.itemKey = key; itemEl.innerHTML = `<span>${item.name}</span><span>x${this.state.inventory[key]}</span>`; itemEl.onclick = () => this.useItem(key); listEl.appendChild(itemEl); }); const cancelBtn = document.createElement('div'); cancelBtn.id = 'bag-cancel-button'; cancelBtn.className = 'bag-item'; cancelBtn.textContent = 'CANCELAR'; cancelBtn.onclick = () => this.closeBag(); listEl.appendChild(cancelBtn); },
-    useItem(itemKey) { const itemData = this.items[itemKey]; if(itemData.actionKey === 'none') { this.logMessage('Não pode ser usado agora.'); return; } this.closeBag(); this.executeTurn(itemData.actionKey, itemKey); },
-    
-    // --- LÓGICA DA EQUIPE ---
+    useItem(itemKey) { const itemData = this.items[key]; if(itemData.actionKey === 'none') { this.logMessage('Não pode ser usado agora.'); return; } this.closeBag(); this.executeTurn(itemData.actionKey, itemKey); },
     openTeamScreen(forceOpen = false) { if (this.state.gameState !== 'PLAYER_TURN' && !forceOpen) return; this.state.isForcedSwap = forceOpen; this.elements.team.screen.style.display = 'block'; const firstAvailable = this.state.playerTeam.findIndex(p => !p.isFainted); this.state.activeTeamMemberIndex = firstAvailable >= 0 ? firstAvailable : 0; this.renderTeamScreen(); this.setGameState('TEAM_SCREEN_OPEN'); },
     closeTeamScreen() { if (this.state.isForcedSwap) return; this.elements.team.screen.style.display = 'none'; this.setGameState('PLAYER_TURN'); this.renderMenu(); },
     renderTeamScreen() { const { selectedPanel, listPanel, dialogText, dialogButtons } = this.elements.team; selectedPanel.innerHTML = ''; listPanel.innerHTML = ''; dialogButtons.innerHTML = ''; const selectedPokemon = this.state.playerTeam[this.state.activeTeamMemberIndex]; selectedPanel.innerHTML = this.createPokemonCard(selectedPokemon, true); this.state.playerTeam.forEach((pokemon, index) => { if (index !== this.state.activeTeamMemberIndex) { listPanel.innerHTML += this.createPokemonCard(pokemon, false); } }); if (this.state.isForcedSwap) { dialogText.textContent = 'Escolha o próximo Pokémon!'; const swapBtn = document.createElement('button'); swapBtn.className = 'team-action-btn'; swapBtn.textContent = 'TROCAR'; swapBtn.onclick = () => this.swapPokemon(this.state.activeTeamMemberIndex); dialogButtons.appendChild(swapBtn); const giveUpBtn = document.createElement('button'); giveUpBtn.className = 'team-action-btn desistir'; giveUpBtn.textContent = 'DESISTIR'; giveUpBtn.onclick = () => this.gameOver(false); dialogButtons.appendChild(giveUpBtn); } else { dialogText.textContent = 'Escolha um Pokémon.'; const backBtn = document.createElement('button'); backBtn.className = 'back-button'; backBtn.textContent = 'VOLTAR'; backBtn.onclick = () => this.closeTeamScreen(); dialogButtons.appendChild(backBtn); } this.addTeamClickListeners(); },
     createPokemonCard(pokemon, isSelected) { const hpPercentage = pokemon.isFainted ? 0 : (pokemon.hp / pokemon.maxHp) * 100; return ` <div class="pokemon-card ${isSelected ? 'selected' : ''} ${pokemon.isFainted ? 'fainted' : ''}" data-index="${this.state.playerTeam.indexOf(pokemon)}"> <img src="${pokemon.sprite}" alt="${pokemon.name}" class="${isSelected ? 'sprite-large' : 'sprite-small'}"> <div class="team-info"> <div class="team-name-level"><span class="team-name">${pokemon.name.toUpperCase()}</span><span class="team-level">Lv${pokemon.level}</span></div> <div class="team-hp-container"><span class="team-hp-label">HP</span><div class="team-hp-bar-background"><div class="team-hp-bar-foreground" style="width: ${hpPercentage}%;"></div></div></div> <div class="team-hp-values"><span>${Math.ceil(pokemon.hp)}/${pokemon.maxHp}</span></div> </div> </div> `; },
-    addTeamClickListeners() { document.querySelectorAll('#team-screen .pokemon-card').forEach(card => { card.onmouseenter = () => { this.state.activeTeamMemberIndex = parseInt(card.dataset.index); this.renderTeamScreen(); }; card.onclick = () => { if(!this.state.isForcedSwap) this.swapPokemon(this.state.activeTeamMemberIndex); }; }); },
+    addTeamClickListeners() { document.querySelectorAll('#team-screen .pokemon-card').forEach(card => { const cardIndex = parseInt(card.dataset.index); card.onmouseenter = () => { if (this.state.activeTeamMemberIndex !== cardIndex) { this.state.activeTeamMemberIndex = cardIndex; this.renderTeamScreen(); } }; card.onclick = () => { if (!this.state.isForcedSwap) { this.swapPokemon(cardIndex); } }; }); },
     swapPokemon(newIndex) { const wasForced = this.state.isForcedSwap; const currentActiveIndex = this.state.playerTeam.findIndex(p => p.id === this.activePokemon.id); if (newIndex === currentActiveIndex && !wasForced) { this.elements.team.dialogText.textContent = 'Este Pokémon já está em batalha!'; return; } const targetPokemon = this.state.playerTeam[newIndex]; if (targetPokemon.isFainted) { this.elements.team.dialogText.textContent = `${targetPokemon.name} não pode batalhar!`; return; } this.state.isForcedSwap = false; this.elements.team.screen.style.display = 'none'; if (!wasForced) { this.logMessage(`Volte, ${this.activePokemon.name}!`); } setTimeout(() => { const newActivePokemon = this.state.playerTeam.splice(newIndex, 1)[0]; this.state.playerTeam.unshift(newActivePokemon); this.updateUI(); this.logMessage(`Vá, ${this.activePokemon.name}!`); if (!wasForced) { setTimeout(() => this.enemyTurn(), 1500); } else { this.setGameState('PLAYER_TURN'); this.renderMenu(); } }, 1000); },
-    
-    // --- LÓGICA DE BATALHA ---
-    executeTurn(actionKey, itemKey = null) {
-        if (this.state.gameState !== 'PLAYER_TURN') return;
-        this.setGameState('PROCESSING');
-        const action = this.actions[actionKey];
-        const itemName = itemKey ? this.items[itemKey].name : (actionKey === 'attack' ? 'Ataque' : 'Magia');
-        this.logMessage(`${this.activePokemon.name} usa ${itemName}!`);
-        if (itemKey) this.state.inventory[itemKey]--;
-        if (action.cost) this.activePokemon.mp -= action.cost;
-        if (action.stat === 'heal') {
-            this.activePokemon.hp = Math.min(this.activePokemon.maxHp, this.activePokemon.hp + 50);
-            setTimeout(() => this.enemyTurn(), 1500);
-        } else if (action.stat === 'run') {
-            this.gameOver(false);
-            return;
-        } else if (action.stat === 'catch') {
-            setTimeout(() => {
-                this.logMessage('Oh, não! O Pokémon escapou!');
-                this.enemyTurn();
-            }, 1500);
-        } else {
-            // // NOVO CÓDIGO - PASSO 3 (PARTE 1): MOSTRAR EFEITO NO INIMIGO
-            this.showAttackEffect(this.elements.enemy.monsterSprite);
-            let damage = this.calculateDamage(this.activePokemon[action.stat], this.state.enemy.defense);
-            this.state.enemy.hp -= damage;
-            if (this.state.enemy.hp <= 0) {
-                this.logMessage(`${this.state.enemy.name.toUpperCase()} foi derrotado!`);
-                this.gainXP(this.state.enemies[this.state.currentEnemyIndex].xp);
-                this.state.playerTeam[0].gold += this.state.enemies[this.state.currentEnemyIndex].gold;
-                setTimeout(() => this.nextEnemy(), 2000);
-                return;
-            }
-            setTimeout(() => this.enemyTurn(), 1500);
-        }
-        this.updateUI();
-    },
-    enemyTurn() {
-        this.setGameState('ENEMY_TURN');
-        const enemy = this.state.enemy;
-        this.logMessage(`${enemy.name.toUpperCase()} ATACA!`);
-
-        // // NOVO CÓDIGO - PASSO 3 (PARTE 2): MOSTRAR EFEITO NO JOGADOR
-        this.showAttackEffect(this.elements.player.monsterSprite);
-
-        let damage = this.calculateDamage(enemy.attack, this.activePokemon.defense);
-        this.activePokemon.hp -= damage;
-        this.updateUI();
-        if (this.activePokemon.hp <= 0) {
-            this.activePokemon.hp = 0;
-            this.activePokemon.isFainted = true;
-            this.logMessage(`${this.activePokemon.name} foi derrotado!`);
-            const availablePokemon = this.state.playerTeam.filter(p => !p.isFainted);
-            if (availablePokemon.length > 0) {
-                setTimeout(() => this.openTeamScreen(true), 1500);
-            } else {
-                this.gameOver(false);
-            }
-            return;
-        }
-        setTimeout(() => {
-            this.setGameState('PLAYER_TURN');
-            this.renderMenu();
-        }, 1500);
-    },
-    
-    // --- FUNÇÕES UTILITÁRIAS ---
+    executeTurn(actionKey, itemKey = null) { if (this.state.gameState !== 'PLAYER_TURN') return; this.setGameState('PROCESSING'); const action = this.actions[actionKey]; const itemName = itemKey ? this.items[itemKey].name : (actionKey === 'attack' ? 'Ataque' : 'Magia'); this.logMessage(`${this.activePokemon.name} usa ${itemName}!`); if (itemKey) this.state.inventory[itemKey]--; if (action.cost) this.activePokemon.mp -= action.cost; if (action.stat === 'heal') { this.activePokemon.hp = Math.min(this.activePokemon.maxHp, this.activePokemon.hp + 50); setTimeout(() => this.enemyTurn(), 1500); } else if (action.stat === 'run') { this.gameOver(false); return; } else if (action.stat === 'catch') { setTimeout(() => { this.logMessage('Oh, não! O Pokémon escapou!'); this.enemyTurn(); }, 1500); } else { this.showAttackEffect(this.elements.enemy.monsterSprite); this.applyDamageEffect(this.elements.enemy.monsterSprite); let damage = this.calculateDamage(this.activePokemon[action.stat], this.state.enemy.defense); this.state.enemy.hp -= damage; if (this.state.enemy.hp <= 0) { this.logMessage(`${this.state.enemy.name.toUpperCase()} foi derrotado!`); this.gainXP(this.state.enemies[this.state.currentEnemyIndex].xp); this.state.playerTeam[0].gold += this.state.enemies[this.state.currentEnemyIndex].gold; setTimeout(() => this.nextEnemy(), 2000); return; } setTimeout(() => this.enemyTurn(), 1500); } this.updateUI(); },
+    enemyTurn() { this.setGameState('ENEMY_TURN'); const enemy = this.state.enemy; this.logMessage(`${enemy.name.toUpperCase()} ATACA!`); this.showAttackEffect(this.elements.player.monsterSprite); this.applyDamageEffect(this.elements.player.monsterSprite); let damage = this.calculateDamage(enemy.attack, this.activePokemon.defense); this.activePokemon.hp -= damage; this.updateUI(); if (this.activePokemon.hp <= 0) { this.activePokemon.hp = 0; this.activePokemon.isFainted = true; this.logMessage(`${this.activePokemon.name} foi derrotado!`); const availablePokemon = this.state.playerTeam.filter(p => !p.isFainted); if (availablePokemon.length > 0) { setTimeout(() => this.openTeamScreen(true), 1500); } else { this.gameOver(false); } return; } setTimeout(() => { this.setGameState('PLAYER_TURN'); this.renderMenu(); }, 1500); },
     setGameState(newState) { this.state.gameState = newState; const menuContainer = this.elements.player.actions.parentElement; menuContainer.style.pointerEvents = (newState === 'PLAYER_TURN' || newState === 'TEAM_SCREEN_OPEN') ? 'auto' : 'none'; menuContainer.style.opacity = (newState === 'PLAYER_TURN' || newState === 'TEAM_SCREEN_OPEN') ? '1' : '0.7'; },
     updateUI() { const player = this.activePokemon; const { player: pEl, enemy: eEl } = this.elements; pEl.monsterSprite.src = player.sprite; pEl.name.innerHTML = `${player.name} <span style="font-size:0.7em;">LV ${player.level}</span>`; pEl.hpBar.style.width = `${Math.max(0, player.hp / player.maxHp * 100)}%`; pEl.hpText.textContent = `${Math.ceil(player.hp)}/${player.maxHp}`; pEl.mpBar.style.width = `${Math.max(0, player.mp / player.maxMp * 100)}%`; pEl.mpText.textContent = `${Math.ceil(player.mp)}/${player.maxMp}`; pEl.xpBar.style.width = `${Math.max(0, player.xp / player.xpToNextLevel * 100)}%`; pEl.xpText.textContent = `${player.xp}/${player.xpToNextLevel}`; if (this.state.enemy.name) { eEl.name.innerHTML = `${this.state.enemy.name.toUpperCase()} <span style="font-size:0.7em;">LV ${this.state.enemy.level || 1}</span>`; eEl.monsterSprite.src = this.state.enemy.img; eEl.hpBar.style.width = `${Math.max(0, this.state.enemy.hp / this.state.enemy.maxHp * 100)}%`; eEl.hpText.textContent = `${Math.ceil(this.state.enemy.hp)}/${this.state.enemy.maxHp}`; } },
     sanitizeStats() { this.state.playerTeam.forEach(p => { p.hp = Math.min(p.hp, p.maxHp); if (p.hp <= 0) { p.isFainted = true; p.hp = 0;} else {p.isFainted = false;} }); Object.keys(this.state.inventory).forEach(key => this.state.inventory[key] = this.state.inventory[key] || 0); },
@@ -272,40 +312,76 @@ const Game = {
     gainXP(amount) { this.activePokemon.xp += amount; if (this.activePokemon.xp >= this.activePokemon.xpToNextLevel) { this.activePokemon.level++; this.activePokemon.xp = 0; this.logMessage(`LEVEL UP! NÍVEL ${this.activePokemon.level}!`); } },
     nextEnemy() { this.state.currentEnemyIndex++; if (this.state.currentEnemyIndex >= this.state.enemies.length) { this.gameOver(true); return; } this.loadEnemy(); this.updateUI(); this.setGameState('PLAYER_TURN'); },
     loadEnemy() { this.state.enemy = { ...this.state.enemies[this.state.currentEnemyIndex] }; this.state.enemy.maxHp = this.state.enemy.hp; },
+    showAttackEffect(targetElement) { const effect = document.createElement('img'); effect.src = 'https://i.gifer.com/origin/d7/d7ac4f38b77abe73165c2b9691907245_w200.gif'; effect.className = 'attack-effect'; const targetRect = targetElement.getBoundingClientRect(); const effectSize = 150; effect.style.left = `${targetRect.left + (targetRect.width / 2) - (effectSize / 2)}px`; effect.style.top = `${targetRect.top + (targetRect.height / 2) - (effectSize / 2)}px`; document.body.appendChild(effect); setTimeout(() => { effect.remove(); }, 500); },
     
-    // // NOVO CÓDIGO - PASSO 2: FUNÇÃO PARA MOSTRAR O EFEITO
-    showAttackEffect(targetElement) {
-        const effect = document.createElement('img');
-        // Você pode usar qualquer GIF de fogo/explosão com fundo transparente
-        effect.src = 'https://i.gifer.com/origin/d7/d7ac4f38b77abe73165c2b9691907245_w200.gif'; 
-        effect.className = 'attack-effect';
-
-        const targetRect = targetElement.getBoundingClientRect();
-        const effectSize = 150; // O mesmo valor da width/height no CSS
-
-        // Calcula a posição para centralizar o efeito no alvo
-        effect.style.left = `${targetRect.left + (targetRect.width / 2) - (effectSize / 2)}px`;
-        effect.style.top = `${targetRect.top + (targetRect.height / 2) - (effectSize / 2)}px`;
-
-        document.body.appendChild(effect);
-
-        // Remove o elemento do efeito da tela após a animação terminar
+    applyDamageEffect(targetSprite) {
+        targetSprite.classList.add('take-damage');
         setTimeout(() => {
-            effect.remove();
-        }, 500); // Duração da animação em milissegundos
+            targetSprite.classList.remove('take-damage');
+        }, 400);
+    },
+
+    createWindEffect() {
+        const arena = document.querySelector('.battle-arena');
+        if (!arena) return;
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'wind-particle';
+            const size = Math.random() * 3 + 1;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * -200}px`;
+            particle.style.top = `${Math.random() * 100}%`;
+            const duration = Math.random() * 2 + 1.5;
+            const delay = Math.random() * 3;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            arena.appendChild(particle);
+        }
     },
 
     gameOver(isVictory) {
         this.setGameState('GAME_OVER');
-        const modal = this.elements.modal.container;
+        const loseModal = this.elements.modal.container;
+
         if (isVictory) {
             this.logMessage('TODOS OS INIMIGOS FORAM DERROTADOS!');
-            this.saveProgress({ final_win: true }); // Salva o progresso final
-            modal.innerHTML = `<div class="modal-box"><h2>VITÓRIA!</h2><p>Você superou todos os desafios e se tornou uma lenda!</p><a href="{{ route('home') }}" class="btn">VOLTAR AO INÍCIO</a></div>`;
+            const newStoneCount = (this.state.inventory.thunderstone || 0) + 2;
+            this.state.inventory.thunderstone = newStoneCount;
+            this.saveProgress({ 
+                final_win: true,
+                thunderstones: newStoneCount
+            });
+            
+            document.querySelector('.battle-screen').style.display = 'none';
+
+            const victoryOverlay = document.getElementById('victory-sequence');
+            const rewardText = document.getElementById('victory-reward-text');
+            victoryOverlay.classList.add('is-visible');
+
+            setTimeout(() => {
+                rewardText.classList.remove('hidden');
+                rewardText.classList.add('visible');
+            }, 2000);
+
+            setTimeout(() => {
+                victoryOverlay.classList.remove('is-visible');
+                const creditsOverlay = document.getElementById('credits-sequence');
+                creditsOverlay.classList.add('is-visible');
+
+                const creditsContent = document.querySelector('.credits-content');
+                creditsContent.addEventListener('animationend', () => {
+                    // Importante: Apenas esconda o conteúdo que rolou, não o overlay todo
+                    creditsContent.style.visibility = 'hidden'; 
+                    document.getElementById('end-game-menu').classList.replace('hidden', 'visible');
+                }, { once: true });
+
+            }, 5000); 
+
         } else {
-            modal.innerHTML = `<div class="modal-box"><h2>FIM DE JOGO</h2><p>Sua jornada termina aqui.</p><a href="{{ route('home') }}" class="btn">TELA INICIAL</a></div>`;
+            loseModal.innerHTML = `<div class="modal-box"><h2>FIM DE JOGO</h2><p>Sua jornada termina aqui.</p><a href="{{ route('home') }}" class="btn">TELA INICIAL</a></div>`;
+            loseModal.classList.add('is-visible');
         }
-        modal.classList.add('is-visible');
     },
     async saveProgress(data) { try { await fetch("{{ route('character.saveProgress', $character->id) }}", { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }, body: JSON.stringify(data) }); } catch (error) { console.error('Erro:', error); } },
     logMessage(message) { this.elements.log.querySelector('p').innerHTML = message; },
