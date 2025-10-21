@@ -8,7 +8,7 @@ use App\Models\Character;
 class GameController extends Controller
 {
     /**
-     * Mostra a tela de criação de personagem (index.blade.php).
+     * Mostra a tela de criação de personagem.
      */
     public function create()
     {
@@ -28,10 +28,15 @@ class GameController extends Controller
         $character = Character::create([
             'name' => $request->name,
             'avatar' => $request->avatar,
-            'hp' => 100, 'mp' => 50, 'attack' => 10, 'defense' => 10,
+            'hp' => 100, 'max_hp' => 100,
+            'mp' => 50, 'max_mp' => 50,
+            'attack' => 10, 'defense' => 10,
             'speed' => 10, 'special_attack' => 10, 'special_defense' => 10,
-            'level' => 1, 'exp' => 0, 'gold' => 50,
-            'potions' => 3 // Personagem começa com 3 poções
+            'level' => 1, 'exp' => 0, 'gold' => 500,
+            'potions' => 3,
+            'pokeballs' => 0, // Valor inicial para novos itens
+            'greatballs' => 0,
+            'thunderstones' => 0,
         ]);
 
         return redirect()->route('character.tutorial', $character->id);
@@ -40,29 +45,25 @@ class GameController extends Controller
     /**
      * Mostra a tela de tutorial.
      */
-    public function tutorial($id)
+    public function tutorial(Character $character)
     {
-        $character = Character::findOrFail($id);
         return view('game.tutorial', compact('character'));
     }
 
     /**
      * Mostra a tela de alocação de pontos.
      */
-    public function allocate($id)
+    public function allocate(Character $character)
     {
-        $character = Character::findOrFail($id);
         return view('game.allocate', compact('character'));
     }
 
     /**
-     * Armazena os atributos distribuídos, somando-os aos stats base.
+     * Armazena os atributos distribuídos.
      */
-    public function allocateStore(Request $request, $id)
+    public function allocateStore(Request $request, Character $character)
     {
-        $character = Character::findOrFail($id);
-
-        $request->validate([
+        $validated = $request->validate([
             'hp' => 'required|integer|min:0',
             'mp' => 'required|integer|min:0',
             'attack' => 'required|integer|min:0',
@@ -72,66 +73,54 @@ class GameController extends Controller
             'special_defense' => 'required|integer|min:0',
         ]);
 
-        $character->update([
-            'hp' => 100 + $request->input('hp'),
-            'mp' => 50 + $request->input('mp'),
-            'attack' => 10 + $request->input('attack'),
-            'defense' => 10 + $request->input('defense'),
-            'speed' => 10 + $request->input('speed'),
-            'special_attack' => 10 + $request->input('special_attack'),
-            'special_defense' => 10 + $request->input('special_defense'),
-        ]);
+        $character->hp += $validated['hp'];
+        $character->mp += $validated['mp'];
+        $character->attack += $validated['attack'];
+        $character->defense += $validated['defense'];
+        $character->speed += $validated['speed'];
+        $character->special_attack += $validated['special_attack'];
+        $character->special_defense += $validated['special_defense'];
+        
+        $character->max_hp = $character->hp;
+        $character->max_mp = $character->mp;
+        
+        $character->save();
         
         return redirect()->route('character.play', $character->id);
     }
 
-    /**
-     * Mostra a tela da Fase 1.
-     */
-    public function play($id)
+    // --- Fases do Jogo ---
+    public function play(Character $character)
     {
-        $character = Character::findOrFail($id);
         return view('game.play', compact('character'));
     }
 
-    /**
-     * Mostra a tela da Fase 2.
-     */
-    public function play2($id)
+    public function play2(Character $character)
     {
-        $character = Character::findOrFail($id);
         return view('game.play2', compact('character'));
     }
 
-    /**
-     * Mostra a tela da Fase 3.
-     */
-    public function play3($id)
+    public function play3(Character $character)
     {
-        $character = Character::findOrFail($id);
         return view('game.play3', compact('character'));
     }
 
     /**
-     * Salva o progresso do personagem vindo do JavaScript.
+     * Salva o progresso do personagem vindo da batalha.
      */
-    public function saveProgress(Request $request, $id)
+    public function saveProgress(Request $request, Character $character)
     {
-        $character = Character::findOrFail($id);
-
-        $character->update([
-            'hp' => $request->input('maxHp'),
-            'mp' => $request->input('maxMp'),
-            'attack' => $request->input('attack'),
-            'defense' => $request->input('defense'),
-            'special_attack' => $request->input('sp_attack'),
-            'special_defense' => $request->input('sp_defense'),
-            'speed' => $request->input('speed'),
-            'level' => $request->input('level'),
-            'exp' => $request->input('xp'),
-            'gold' => $request->input('gold'),
-            'potions' => $request->input('potions'),
+        // Valida os dados recebidos da batalha
+        $validatedData = $request->validate([
+            'hp' => 'integer', 'mp' => 'integer', 'attack' => 'integer', 
+            'defense' => 'integer', 'special_attack' => 'integer', 
+            'special_defense' => 'integer', 'speed' => 'integer', 'level' => 'integer', 
+            'exp' => 'integer', 'gold' => 'integer', 'potions' => 'integer',
+            'pokeballs' => 'integer', 'greatballs' => 'integer', 'thunderstones' => 'integer'
         ]);
+        
+        // Atualiza o personagem com os dados validados
+        $character->update($validatedData);
 
         return response()->json(['success' => true]);
     }
@@ -139,60 +128,55 @@ class GameController extends Controller
     /**
      * Mostra a tela da loja.
      */
-    public function shop($id, Request $request)
+    public function shop(Character $character, Request $request)
     {
-        $character = Character::findOrFail($id);
         $next_stage = $request->query('next_stage', 'play');
         return view('game.shop', compact('character', 'next_stage'));
     }
 
     /**
-     * Processa a compra de um item da loja.
+     * ATUALIZADO: Processa a compra de um item da loja.
+     * Este é o método que a rota 'character.updateStats' chama.
      */
-    public function buyItem(Request $request, $id)
+    public function updateStats(Request $request, Character $character)
     {
-        $character = Character::findOrFail($id);
-        $itemId = $request->input('itemId');
-
-        $items = [
-            'potion' => ['name' => 'Poção de Vida', 'cost' => 50, 'effect' => ['potions' => 1]],
-            'elixir' => ['name' => 'Elixir de Mana', 'cost' => 75, 'effect' => ['mp' => 50]],
-            'sword1' => ['name' => 'Espada de Ferro', 'cost' => 150, 'effect' => ['attack' => 5]],
-            'sword2' => ['name' => 'Lâmina de Aço Valiriano', 'cost' => 400, 'effect' => ['attack' => 12, 'special_attack' => 5]],
-            'shield1' => ['name' => 'Escudo de Madeira', 'cost' => 120, 'effect' => ['defense' => 5]],
-            'armor1' => ['name' => 'Peitoral de Placas', 'cost' => 500, 'effect' => ['defense' => 15, 'hp' => 20]],
-            'amulet1' => ['name' => 'Amuleto de Mana', 'cost' => 100, 'effect' => ['mp' => 20]],
-            'ring1' => ['name' => 'Anel do Poder', 'cost' => 1000, 'effect' => ['attack' => 5, 'defense' => 5, 'special_attack' => 5, 'special_defense' => 5, 'speed' => 5]],
-        ];
-
-        $item = $items[$itemId] ?? null;
-
-        if (!$item) { return response()->json(['success' => false, 'message' => 'Item não encontrado!']); }
-        if ($character->gold < $item['cost']) { return response()->json(['success' => false, 'message' => 'Ouro insuficiente!']); }
-
-        $character->gold -= $item['cost'];
-
-        foreach ($item['effect'] as $stat => $bonus) {
-            $character->$stat += $bonus;
-        }
-
-        $character->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => $item['name'] . ' comprado!',
-            'newGold' => $character->gold,
-            'newStats' => $character->fresh()
+        // Valida se os dados recebidos são números inteiros.
+        $validatedData = $request->validate([
+            'gold' => 'sometimes|integer',
+            'potions' => 'sometimes|integer',
+            'pokeballs' => 'sometimes|integer',
+            'greatballs' => 'sometimes|integer',
+            'thunderstones' => 'sometimes|integer',
         ]);
+
+        try {
+            // O método update() usa o array $fillable do seu Model
+            // para salvar apenas os campos permitidos de forma segura.
+            $character->update($validatedData);
+
+            // Retorna uma resposta de sucesso.
+            return response()->json([
+                'success' => true,
+                'message' => 'Progresso salvo com sucesso!',
+                'newStats' => $character->fresh() // Retorna os dados atualizados do personagem
+            ]);
+
+        } catch (\Exception $e) {
+            // Se algo der errado, retorna um erro 500.
+            // Verifique o arquivo `storage/logs/laravel.log` para detalhes.
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocorreu um erro no servidor ao salvar os dados.'
+            ], 500);
+        }
     }
     
     /**
      * Atualiza o nome do personagem.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Character $character)
     {
-        $character = Character::findOrFail($id);
-        $request->validate([ 'name' => 'required|string|max:50' ]);
+        $request->validate(['name' => 'required|string|max:50']);
         $character->name = $request->name;
         $character->save();
         return response()->json(['success' => true]);
@@ -201,9 +185,8 @@ class GameController extends Controller
     /**
      * Deleta um personagem.
      */
-    public function destroy($id)
+    public function destroy(Character $character)
     {
-        $character = Character::findOrFail($id);
         $character->delete();
         return response()->json(['success' => true]);
     }

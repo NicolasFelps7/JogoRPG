@@ -17,16 +17,21 @@ class Character extends Model
     protected $fillable = [
         'name',
         'avatar',
+        'level',
         'hp',
+        'max_hp',
         'mp',
+        'max_mp',
         'attack',
         'defense',
-        'speed',
         'special_attack',
         'special_defense',
-        'level',
+        'speed',
         'exp',
-        'gold',     // <-- ADICIONADO
-        'potions',  // <-- ADICIONADO
+        'gold',
+        'potions',      // <-- Necessário
+        'pokeballs',    // <-- Necessário
+        'greatballs',   // <-- Necessário
+        'thunderstones' // <-- Necessário
     ];
 }
