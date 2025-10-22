@@ -7,7 +7,7 @@
 <title>Batalha Épica | {{ $character->name }}</title>
 <link rel="icon" href="{{ asset('img/logo.png') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
@@ -43,8 +43,50 @@
     @keyframes player-attack-wind { 0% { opacity: 0; bottom: 150px; left: 25%; transform: rotate(-30deg) scale(0.5); } 50% { opacity: 1; transform: rotate(-30deg) scale(1.2); } 100% { opacity: 0; bottom: 350px; left: 65%; transform: rotate(-30deg) scale(0.5); } }
     .attack-wind-slash.enemy-attack { animation: enemy-attack-wind 0.4s ease-out forwards; }
     @keyframes enemy-attack-wind { 0% { opacity: 0; top: 150px; right: 25%; transform: rotate(-30deg) scale(0.5); } 50% { opacity: 1; transform: rotate(-30deg) scale(1.2); } 100% { opacity: 0; top: 350px; right: 65%; transform: rotate(-30deg) scale(0.5); } }
-    .battle-monster-sprite { width: 250px; height: 250px; object-fit: contain; }
-    #player-area { position: absolute; bottom: 40px; left: 10%; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    
+    /* ===== NOVOS E AJUSTADOS ESTILOS PARA OS SPRITES DO JOGADOR ===== */
+    /* Ajustes na área do jogador */
+    #player-area {
+        position: absolute;
+        bottom: 40px;
+        left: 5%; /* Ajustado para melhor centralização */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Novo contêiner para os sprites do jogador e pokémon */
+    .player-sprites-container {
+        display: flex;
+        align-items: flex-end; /* Alinha os sprites pela base */
+    }
+    
+    /* Estilo para o sprite do treinador */
+    .battle-character-sprite {
+        width: 220px;
+        height: 220px;
+        object-fit: contain;
+        position: relative; /* Necessário para o z-index */
+        z-index: 5; /* Garante que o treinador fique na frente */
+        transform: translateX(30px); /* Move um pouco para a direita */
+    }
+
+    /* Ajuste para o sprite do pokémon do jogador */
+    #player-pokemon-sprite {
+       width: 160px;
+       height: 160px;
+       transform: translateX(-40px); /* Move para a esquerda, para trás do treinador */
+    }
+    
+    /* Redimensiona o sprite geral dos monstros para um tamanho mais consistente */
+    .battle-monster-sprite {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+    }
+    /* ================================================================= */
+
     #enemy-area { position: absolute; top: 80px; right: 10%; display: flex; flex-direction: column; align-items: center; gap: 5px; }
     .status-box-pokemon { background: var(--dialog-bg); border: 2px solid var(--dialog-border); box-shadow: 2px 2px 0px rgba(0,0,0,0.3); padding: 8px 12px; color: var(--dialog-text); font-size: 0.8rem; z-index: 10; min-width: 220px; text-align: left; }
     .status-box-pokemon h2 { font-size: 0.9rem; margin-bottom: 3px; color: var(--dialog-text); text-shadow: none; }
@@ -134,7 +176,28 @@
 
 <div class="battle-screen">
     <div class="battle-arena">
-        <div id="player-area"><img src="{{ asset($character->avatar) }}" id="player-battle-monster-sprite" class="battle-monster-sprite" alt="Sprite do Monstro do Jogador"><div id="player-battle-status" class="status-box-pokemon"><h2 id="playerName"></h2><div class="hp-bar-container"><div class="hp-bar-fill" id="playerHpBar"></div><div class="hp-bar-text" id="playerHpText"></div></div><div class="hp-bar-container"><div class="hp-bar-fill mp" id="playerMpBar"></div><div class="hp-bar-text" id="playerMpText"></div></div><div class="hp-bar-container"><div class="hp-bar-fill xp" id="playerXpBar"></div><div class="hp-bar-text" id="playerXpText"></div></div></div></div>
+        
+        <div id="player-area">
+            <div class="player-sprites-container">
+                <img src="{{ asset($character->avatar) }}" id="player-trainer-sprite" class="battle-character-sprite" alt="Sprite do Treinador">
+                <img src="" id="player-pokemon-sprite" class="battle-monster-sprite" alt="Sprite do Pokémon do Jogador">
+            </div>
+            <div id="player-battle-status" class="status-box-pokemon">
+                <h2 id="playerName"></h2>
+                <div class="hp-bar-container">
+                    <div class="hp-bar-fill" id="playerHpBar"></div>
+                    <div class="hp-bar-text" id="playerHpText"></div>
+                </div>
+                <div class="hp-bar-container">
+                    <div class="hp-bar-fill mp" id="playerMpBar"></div>
+                    <div class="hp-bar-text" id="playerMpText"></div>
+                </div>
+                <div class="hp-bar-container">
+                    <div class="hp-bar-fill xp" id="playerXpBar"></div>
+                    <div class="hp-bar-text" id="playerXpText"></div>
+                </div>
+            </div>
+        </div>
         <div id="enemy-area"><img src="" id="enemy-monster-sprite" class="battle-monster-sprite" alt="Sprite do Monstro Inimigo"><div id="enemy-battle-status" class="status-box-pokemon"><h2 id="enemyName"></h2><div class="hp-bar-container"><div class="hp-bar-fill" id="enemyHpBar"></div><div class="hp-bar-text" id="enemyHpText"></div></div></div></div>
         <div id="attack-effect-container"><div class="attack-wind-slash"></div></div>
     </div>
@@ -165,7 +228,7 @@
             <div id="team-list-panel" class="team-list-panel"></div>
         </div>
         <div id="team-dialog-box" class="team-dialog-box">
-             Escolha um Pokémon.
+            Escolha um Pokémon.
             <div id="team-back-button" class="back-button">VOLTAR</div>
         </div>
     </div>
@@ -185,8 +248,15 @@ const Intro = {
 
 const Game = {
     state: {
+        // Objeto para dados do treinador
+        trainer: {
+            name: "{{ $character->name }}",
+            gold: parseInt("{{ $character->gold ?? 0 }}", 10)
+        },
+        // A equipe agora contém apenas Pokémon
         playerTeam: [
-            { id: 1, name: "{{ $character->name }}", hp: parseInt("{{ $character->hp }}"), maxHp: parseInt("{{ $character->max_hp }}"), mp: parseInt("{{ $character->mp }}"), maxMp: parseInt("{{ $character->max_mp }}"), attack: parseInt("{{ $character->attack }}"), defense: parseInt("{{ $character->defense }}"), sp_attack: parseInt("{{ $character->special_attack }}"), sp_defense: parseInt("{{ $character->special_defense }}"), speed: parseInt("{{ $character->speed }}"), level: parseInt("{{ $character->level }}"), xp: parseInt("{{ $character->exp ?? 0 }}"), gold: parseInt("{{ $character->gold ?? 0 }}"), xpToNextLevel: 100, isFainted: false, sprite: "{{ asset($character->avatar) }}" },
+            // O primeiro da lista é o que entra em batalha!
+            // Você deve popular esta lista com os Pokémon do seu personagem a partir do backend
             { id: 2, name: "RAICHU", hp: 200, maxHp: 250, mp: 100, maxMp: 200, attack: 200, defense: 20, sp_attack: 8, sp_defense: 8, speed: 10, level: 20, xp: 10, xpToNextLevel: 80, isFainted: false, sprite: 'https://pa1.aminoapps.com/6744/4f8b0d5940eda27c49a30dfa903c3c1321ac798d_hq.gif' },
             { id: 3, name: "PIKACHU", hp: 200, maxHp: 250, mp: 100, maxMp: 200, attack: 200, defense: 9, sp_attack: 10, sp_defense: 9, speed: 18, level: 20, xp: 10, xpToNextLevel: 70, isFainted: false, sprite: 'https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif' }
         ],
@@ -200,15 +270,35 @@ const Game = {
         enemies: [ { name: "Bulbasaur", hp: 75, attack: 20, defense: 25, xp: 40, gold: 25, level: 1, img: "https://i.gifer.com/origin/fe/fe4ebd8a9c0547e94000a9c759acf591_w200.gif" }, { name: "Totodile", hp: 75, attack: 20, defense: 25, xp: 40, gold: 25, level: 1, img: "https://media.tenor.com/lr6evdW49pcAAAAj/totodile-pokemon.gif" }, { name: "Squirtle", hp: 75, attack: 20, defense: 25, xp: 40, gold: 25, level: 1, img: "https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif" } ],
         currentEnemyIndex: 0,
         gameState: 'PLAYER_TURN',
-        menuState: 'main', 
+        menuState: 'main',
         activeBagItemIndex: 0,
-        activeTeamListIndex: 0, // Novo estado para controlar a seleção na lista
+        activeTeamListIndex: 0,
     },
     get activePokemon() {
+        // O Pokémon ativo é sempre o primeiro da lista
         return this.state.playerTeam[0];
     },
     elements: {
-        player: { monsterSprite: document.getElementById('player-battle-monster-sprite'), name: document.getElementById('playerName'), hpBar: document.getElementById('playerHpBar'), hpText: document.getElementById('playerHpText'), mpBar: document.getElementById('playerMpBar'), mpText: document.getElementById('playerMpText'), xpBar: document.getElementById('playerXpBar'), xpText: document.getElementById('playerXpText'), actions: document.getElementById('actionsGrid') }, enemy: { monsterSprite: document.getElementById('enemy-monster-sprite'), name: document.getElementById('enemyName'), hpBar: document.getElementById('enemyHpBar'), hpText: document.getElementById('enemyHpText') }, log: document.getElementById('battleLog'), modal: { container: document.getElementById('endgameModal') }, attackEffect: document.querySelector('.attack-wind-slash'),
+        player: { 
+            pokemonSprite: document.getElementById('player-pokemon-sprite'), // Novo sprite do Pokémon
+            name: document.getElementById('playerName'), 
+            hpBar: document.getElementById('playerHpBar'), 
+            hpText: document.getElementById('playerHpText'), 
+            mpBar: document.getElementById('playerMpBar'), 
+            mpText: document.getElementById('playerMpText'), 
+            xpBar: document.getElementById('playerXpBar'), 
+            xpText: document.getElementById('playerXpText'), 
+            actions: document.getElementById('actionsGrid') 
+        }, 
+        enemy: { 
+            monsterSprite: document.getElementById('enemy-monster-sprite'), 
+            name: document.getElementById('enemyName'), 
+            hpBar: document.getElementById('enemyHpBar'), 
+            hpText: document.getElementById('enemyHpText') 
+        }, 
+        log: document.getElementById('battleLog'), 
+        modal: { container: document.getElementById('endgameModal') }, 
+        attackEffect: document.querySelector('.attack-wind-slash'),
         bag: { screen: document.getElementById('bag-screen'), list: document.getElementById('bag-item-list'), description: document.getElementById('bag-item-description'), },
         team: { screen: document.getElementById('team-screen'), selectedPanel: document.getElementById('team-selected-pokemon-panel'), listPanel: document.getElementById('team-list-panel'), backButton: document.getElementById('team-back-button'), dialog: document.getElementById('team-dialog-box') }
     },
@@ -238,12 +328,10 @@ const Game = {
         const itemEl = document.createElement('div'); itemEl.className = 'bag-item'; itemEl.dataset.itemKey = itemKey; itemEl.innerHTML = `<span>${itemData.name}</span> <span style="font-size: 0.8em;">x${quantity}</span>`; itemEl.onclick = () => { this.useItem(itemKey); }; itemEl.onmouseenter = () => { this.state.activeBagItemIndex = index; this.updateBagSelection(); }; listEl.appendChild(itemEl); }); const cancelButton = document.createElement('div'); cancelButton.id = 'bag-cancel-button'; cancelButton.textContent = 'CANCEL'; cancelButton.onclick = () => this.closeBag(); cancelButton.onmouseenter = () => { this.state.activeBagItemIndex = availableItems.length; this.updateBagSelection(); }; listEl.appendChild(cancelButton); this.updateBagSelection(); },
     updateBagSelection() { const allBagItems = this.elements.bag.list.querySelectorAll('.bag-item, #bag-cancel-button'); allBagItems.forEach((item, index) => { if (index === this.state.activeBagItemIndex) { item.classList.add('active'); if (item.id === 'bag-cancel-button') { this.elements.bag.description.innerHTML = '<p>Fechar a bolsa.</p>'; } else { const itemKey = item.dataset.itemKey; const itemData = this.items[itemKey]; this.elements.bag.description.innerHTML = `<p>${itemData ? itemData.description : 'Item desconhecido.'}</p>`; } } else { item.classList.remove('active'); } }); if (allBagItems[this.state.activeBagItemIndex]) { allBagItems[this.state.activeBagItemIndex].scrollIntoView({ block: 'nearest' }); } },
     useItem(itemKey) { if (this.state.inventory[itemKey] <= 0) { this.logMessage(`Você não tem ${this.items[itemKey].name}!`); this.closeBag(); return; } const itemData = this.items[itemKey]; if (!itemData) return; const actionKey = itemData.actionKey; if (actionKey === 'none') { this.logMessage('Este item não pode ser usado em batalha!'); return; } this.closeBag(); this.executeTurn(actionKey, itemKey); },
-    
     openTeamScreen() {
         if (this.state.gameState !== 'PLAYER_TURN' && this.state.gameState !== 'MUST_SWITCH') return;
         this.elements.team.screen.style.display = 'block';
-        this.state.activeTeamListIndex = 0; // Reseta o índice da lista
-        const dialogTextContainer = this.elements.team.dialog.childNodes[0];
+        this.state.activeTeamListIndex = 0; const dialogTextContainer = this.elements.team.dialog.childNodes[0];
         if (this.state.gameState === 'MUST_SWITCH') {
             dialogTextContainer.nodeValue = 'Escolha o próximo Pokémon. ';
         } else {
@@ -261,8 +349,6 @@ const Game = {
             this.renderMenu();
         }
     },
-
-    // <<< CORREÇÃO DEFINITIVA >>>
     renderTeamScreen() {
         const selectedPanel = this.elements.team.selectedPanel;
         const listPanel = this.elements.team.listPanel;
@@ -270,14 +356,12 @@ const Game = {
         listPanel.innerHTML = '';
 
         const battlingPokemon = this.state.playerTeam[0];
-        selectedPanel.innerHTML = this.createPokemonCard(battlingPokemon, true, false); // O ativo nunca tem a classe 'active'
+        selectedPanel.innerHTML = this.createPokemonCard(battlingPokemon, true, false); 
 
         let currentListIndex = 0;
         this.state.playerTeam.forEach((pokemon, index) => {
             if (index > 0) {
-                // Adiciona a classe 'active' se o índice da lista corresponder ao estado
                 const isActive = (currentListIndex === this.state.activeTeamListIndex);
-                // Usando insertAdjacentHTML que é mais seguro e eficiente
                 listPanel.insertAdjacentHTML('beforeend', this.createPokemonCard(pokemon, false, isActive));
                 currentListIndex++;
             }
@@ -285,12 +369,10 @@ const Game = {
 
         this.elements.team.backButton.onclick = () => this.closeTeamScreen();
         this.addTeamClickListeners();
-        this.updateTeamSelection(); // Garante que a seleção visual está correta
+        this.updateTeamSelection();
     },
-
     createPokemonCard(pokemon, isSelected, isActive) {
         const hpPercentage = pokemon.isFainted ? 0 : (pokemon.hp / pokemon.maxHp) * 100;
-        // Adicionando a classe 'active' dinamicamente
         const activeClass = isActive ? 'active' : '';
         return `
             <div class="pokemon-card ${isSelected ? 'selected' : ''} ${pokemon.isFainted ? 'fainted' : ''} ${activeClass}" data-index="${this.state.playerTeam.indexOf(pokemon)}">
@@ -303,7 +385,6 @@ const Game = {
             </div>
         `;
     },
-
     updateTeamSelection() {
         const allTeamCards = this.elements.team.listPanel.querySelectorAll('.pokemon-card');
         allTeamCards.forEach((card, index) => {
@@ -315,21 +396,18 @@ const Game = {
             }
         });
     },
-
     addTeamClickListeners() {
         this.elements.team.listPanel.querySelectorAll('.pokemon-card').forEach((card, listIndex) => {
             card.onclick = () => {
                 const teamIndex = parseInt(card.dataset.index, 10);
                 this.swapPokemon(teamIndex);
             };
-            // Atualiza o índice com o mouse para manter a consistência com o teclado
             card.onmouseenter = () => {
                 this.state.activeTeamListIndex = listIndex;
                 this.updateTeamSelection();
             };
         });
     },
-
     swapPokemon(newIndex) {
         if (newIndex === 0) { this.logMessage('Este Pokémon já está em batalha!'); return; }
         const targetPokemon = this.state.playerTeam[newIndex];
@@ -349,7 +427,7 @@ const Game = {
     },
     
     init() { this.sanitizeStats(); this.loadEnemy(); this.renderMenu(); this.updateUI(); this.setupKeyboardNavigation(); },
-    executeTurn(actionKey, itemKey = null) { if (this.state.gameState !== 'PLAYER_TURN' && this.state.gameState !== 'BAG_OPEN') return; const action = this.actions[actionKey]; if (!action) { this.logMessage(`Ação '${actionKey}' não implementada.`); return; } if (action.type === 'mp' && this.activePokemon.mp < action.cost) { this.logMessage('MP INSUFICIENTE!'); return; } if (action.type === 'inventory' && this.state.inventory[itemKey] <= 0) { this.logMessage('SEM ESTE ITEM NA BOLSA!'); return; } this.setGameState('PROCESSING'); if (action.type === 'mp') this.activePokemon.mp -= action.cost; if (action.type === 'inventory') this.state.inventory[itemKey]--; const itemName = itemKey ? this.items[itemKey].name : (actionKey === 'attack' ? 'Ataque' : 'Magia'); this.logMessage(`${this.activePokemon.name} usa ${itemName}!`); if (action.stat === 'heal') { const healAmount = action.basePower; this.activePokemon.hp = Math.min(this.activePokemon.maxHp, this.activePokemon.hp + healAmount); this.showPopup(healAmount, this.elements.player.monsterSprite, true); this.logMessage(`${this.activePokemon.name} recuperou ${healAmount} HP.`); setTimeout(() => this.enemyTurn(), 1500); } else if (action.stat === 'defend_stance') { this.logMessage(`${this.activePokemon.name} está se defendendo!`); setTimeout(() => this.enemyTurn(), 1500); } else if (action.stat === 'run') { this.logMessage(`${this.activePokemon.name} tenta fugir...`); setTimeout(() => this.gameOver(false), 1500); return; } else if (action.stat === 'catch') { this.logMessage(`Você atira a ${itemName}...`); setTimeout(() => { this.logMessage('Oh, não! O Pokémon escapou!'); this.updateUI(); setTimeout(() => this.enemyTurn(), 1500); }, 2000); } else { this.triggerAttackEffect('player'); const power = this.activePokemon[action.stat] * action.basePower; let damage = this.calculateDamage(power, this.state.enemy.defense); if (Math.random() < 0.15) { damage = Math.floor(damage * 1.5); this.logMessage('ACERTO CRÍTICO!', 'log-crit'); this.elements.enemy.monsterSprite.classList.add('shake'); setTimeout(() => this.elements.enemy.monsterSprite.classList.remove('shake'), 400); } this.state.enemy.hp -= damage; this.elements.enemy.monsterSprite.classList.add('flash-red'); setTimeout(() => this.elements.enemy.monsterSprite.classList.remove('flash-red'), 200); this.showPopup(damage, this.elements.enemy.monsterSprite, false, damage > power); if (this.state.enemy.hp <= 0) { const defeatedEnemy = this.state.enemies[this.state.currentEnemyIndex]; this.logMessage(`${defeatedEnemy.name.toUpperCase()} DERROTADO!`); this.activePokemon.gold += defeatedEnemy.gold; this.logMessage(`+${defeatedEnemy.gold} OURO!`); this.gainXP(defeatedEnemy.xp); setTimeout(() => this.nextEnemy(), 2000); return; } setTimeout(() => this.enemyTurn(), 1500); } this.updateUI(); },
+    executeTurn(actionKey, itemKey = null) { if (this.state.gameState !== 'PLAYER_TURN' && this.state.gameState !== 'BAG_OPEN') return; const action = this.actions[actionKey]; if (!action) { this.logMessage(`Ação '${actionKey}' não implementada.`); return; } if (action.type === 'mp' && this.activePokemon.mp < action.cost) { this.logMessage('MP INSUFICIENTE!'); return; } if (action.type === 'inventory' && this.state.inventory[itemKey] <= 0) { this.logMessage('SEM ESTE ITEM NA BOLSA!'); return; } this.setGameState('PROCESSING'); if (action.type === 'mp') this.activePokemon.mp -= action.cost; if (action.type === 'inventory') this.state.inventory[itemKey]--; const itemName = itemKey ? this.items[itemKey].name : (actionKey === 'attack' ? 'Ataque' : 'Magia'); this.logMessage(`${this.activePokemon.name} usa ${itemName}!`); if (action.stat === 'heal') { const healAmount = action.basePower; this.activePokemon.hp = Math.min(this.activePokemon.maxHp, this.activePokemon.hp + healAmount); this.showPopup(healAmount, this.elements.player.pokemonSprite, true); this.logMessage(`${this.activePokemon.name} recuperou ${healAmount} HP.`); setTimeout(() => this.enemyTurn(), 1500); } else if (action.stat === 'defend_stance') { this.logMessage(`${this.activePokemon.name} está se defendendo!`); setTimeout(() => this.enemyTurn(), 1500); } else if (action.stat === 'run') { this.logMessage(`${this.state.trainer.name} tenta fugir...`); setTimeout(() => this.gameOver(false), 1500); return; } else if (action.stat === 'catch') { this.logMessage(`Você atira a ${itemName}...`); setTimeout(() => { this.logMessage('Oh, não! O Pokémon escapou!'); this.updateUI(); setTimeout(() => this.enemyTurn(), 1500); }, 2000); } else { this.triggerAttackEffect('player'); const power = this.activePokemon[action.stat] * action.basePower; let damage = this.calculateDamage(power, this.state.enemy.defense); if (Math.random() < 0.15) { damage = Math.floor(damage * 1.5); this.logMessage('ACERTO CRÍTICO!', 'log-crit'); this.elements.enemy.monsterSprite.classList.add('shake'); setTimeout(() => this.elements.enemy.monsterSprite.classList.remove('shake'), 400); } this.state.enemy.hp -= damage; this.elements.enemy.monsterSprite.classList.add('flash-red'); setTimeout(() => this.elements.enemy.monsterSprite.classList.remove('flash-red'), 200); this.showPopup(damage, this.elements.enemy.monsterSprite, false, damage > power); if (this.state.enemy.hp <= 0) { const defeatedEnemy = this.state.enemies[this.state.currentEnemyIndex]; this.logMessage(`${defeatedEnemy.name.toUpperCase()} DERROTADO!`); this.state.trainer.gold += defeatedEnemy.gold; this.logMessage(`+${defeatedEnemy.gold} OURO!`); this.gainXP(defeatedEnemy.xp); setTimeout(() => this.nextEnemy(), 2000); return; } setTimeout(() => this.enemyTurn(), 1500); } this.updateUI(); },
     enemyTurn() {
         this.setGameState('ENEMY_TURN');
         const enemy = this.state.enemy;
@@ -357,9 +435,9 @@ const Game = {
         this.triggerAttackEffect('enemy');
         let damage = this.calculateDamage(enemy.attack, this.activePokemon.defense);
         this.activePokemon.hp -= damage;
-        this.elements.player.monsterSprite.classList.add('flash-red');
-        setTimeout(() => this.elements.player.monsterSprite.classList.remove('flash-red'), 200);
-        this.showPopup(damage, this.elements.player.monsterSprite, false);
+        this.elements.player.pokemonSprite.classList.add('flash-red');
+        setTimeout(() => this.elements.player.pokemonSprite.classList.remove('flash-red'), 200);
+        this.showPopup(damage, this.elements.player.pokemonSprite, false);
         this.activePokemon.mp = Math.min(this.activePokemon.maxMp, this.activePokemon.mp + 5);
         this.updateUI();
         if (this.activePokemon.hp <= 0) {
@@ -381,7 +459,7 @@ const Game = {
         }, 1000);
     },
     setGameState(newState) { this.state.gameState = newState; const menuContainer = this.elements.player.actions.parentElement; menuContainer.style.pointerEvents = (newState === 'PLAYER_TURN') ? 'auto' : 'none'; menuContainer.style.opacity = (newState === 'PLAYER_TURN') ? '1' : '0.7'; document.querySelector('.bag-title-wrapper').style.display = (newState === 'BAG_OPEN') ? 'block' : 'none'; },
-    updateUI() { const player = this.activePokemon; const { player: pEl, enemy: eEl } = this.elements; pEl.monsterSprite.src = player.sprite; pEl.name.innerHTML = `${player.name} <span style="font-size:0.7em;">LV ${player.level}</span>`; pEl.hpBar.style.width = `${Math.max(0, player.hp / player.maxHp * 100)}%`; pEl.hpText.textContent = `${Math.max(0, Math.ceil(player.hp))}/${player.maxHp}`; pEl.mpBar.style.width = `${Math.max(0, player.mp / player.maxMp * 100)}%`; pEl.mpText.textContent = `MP: ${Math.max(0, Math.ceil(player.mp))}/${player.maxMp}`; pEl.xpBar.style.width = `${Math.max(0, player.xp / player.xpToNextLevel * 100)}%`; pEl.xpText.textContent = `XP: ${player.xp}/${player.xpToNextLevel}`; if (this.state.enemy.name) { eEl.name.innerHTML = `${this.state.enemy.name.toUpperCase()} <span style="font-size:0.7em;">LV ${this.state.enemy.level || 1}</span>`; eEl.monsterSprite.src = this.state.enemy.img; eEl.hpBar.style.width = `${Math.max(0, this.state.enemy.hp / this.state.enemy.maxHp * 100)}%`; eEl.hpText.textContent = `${Math.max(0, Math.ceil(this.state.enemy.hp))}/${this.state.enemy.maxHp}`; } },
+    updateUI() { const player = this.activePokemon; const { player: pEl, enemy: eEl } = this.elements; pEl.pokemonSprite.src = player.sprite; pEl.name.innerHTML = `${player.name} <span style="font-size:0.7em;">LV ${player.level}</span>`; pEl.hpBar.style.width = `${Math.max(0, player.hp / player.maxHp * 100)}%`; pEl.hpText.textContent = `${Math.max(0, Math.ceil(player.hp))}/${player.maxHp}`; pEl.mpBar.style.width = `${Math.max(0, player.mp / player.maxMp * 100)}%`; pEl.mpText.textContent = `MP: ${Math.max(0, Math.ceil(player.mp))}/${player.maxMp}`; pEl.xpBar.style.width = `${Math.max(0, player.xp / player.xpToNextLevel * 100)}%`; pEl.xpText.textContent = `XP: ${player.xp}/${player.xpToNextLevel}`; if (this.state.enemy.name) { eEl.name.innerHTML = `${this.state.enemy.name.toUpperCase()} <span style="font-size:0.7em;">LV ${this.state.enemy.level || 1}</span>`; eEl.monsterSprite.src = this.state.enemy.img; eEl.hpBar.style.width = `${Math.max(0, this.state.enemy.hp / this.state.enemy.maxHp * 100)}%`; eEl.hpText.textContent = `${Math.max(0, Math.ceil(this.state.enemy.hp))}/${this.state.enemy.maxHp}`; } },
     sanitizeStats() { this.state.playerTeam.forEach(p => { Object.keys(p).forEach(stat => { if (typeof p[stat] === 'number' && isNaN(p[stat])) { p[stat] = 0; } }); p.hp = Math.min(p.hp, p.maxHp); if (p.hp <= 0) { p.isFainted = true; p.hp = 0;} else {p.isFainted = false;} }); this.state.inventory.potion = parseInt(this.state.inventory.potion, 10) || 0; this.state.inventory.pokeball = parseInt(this.state.inventory.pokeball, 10) || 0; this.state.inventory.greatball = parseInt(this.state.inventory.greatball, 10) || 0; this.state.inventory.thunderstone = parseInt(this.state.inventory.thunderstone, 10) || 0; },
     triggerAttackEffect(attacker) { const effectEl = this.elements.attackEffect; effectEl.className = 'attack-wind-slash'; void effectEl.offsetWidth; effectEl.classList.add(attacker === 'player' ? 'player-attack' : 'enemy-attack'); },
     calculateDamage(power, defense) { const effectiveDefense = defense * 0.5; const baseDamage = Math.max(1, power - effectiveDefense); return Math.floor(baseDamage * (Math.random() * 0.4 + 0.8)); },
@@ -390,9 +468,11 @@ const Game = {
     loadEnemy() { this.state.enemy = { ...this.state.enemies[this.state.currentEnemyIndex] }; this.state.enemy.maxHp = this.state.enemy.hp; },
     async gameOver(isVictory) { this.setGameState('GAME_OVER');
         const saveData = {
+            // Salva os dados do primeiro pokemon (ativo) e do treinador
             ...this.activePokemon, 
-            gold: this.state.playerTeam[0].gold,
+            gold: this.state.trainer.gold,
             inventory: this.state.inventory
+            // IMPORTANTE: você precisará de uma lógica mais complexa para salvar o estado de TODA a equipe
         }; if (isVictory) { this.logMessage('FASE CONCLUÍDA!', 'log-lvlup'); await this.saveProgress(saveData); this.logMessage('POKÉ MART ENCONTRADO...', 'log-system'); setTimeout(() => { window.location.href = "{{ route('character.shop', ['character' => $character->id, 'next_stage' => 'play2']) }}"; }, 1500); } else { const modal = this.elements.modal.container; modal.innerHTML = `<div class="modal-box"><h2>FIM DE JOGO</h2><p>SUA JORNADA TERMINA AQUI...</p><a href="{{ route('home') }}" class="btn">REINICIAR</a></div>`; modal.classList.add('is-visible'); } },
     async saveProgress(data) { try { await fetch("{{ route('character.saveProgress', $character->id) }}", { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }, body: JSON.stringify(data) }); } catch (error) { console.error('Erro ao salvar:', error); } },
     logMessage(message, className = '') { this.elements.log.querySelector('p').innerHTML = message; if (className) this.elements.log.querySelector('p').className = className; },
@@ -432,5 +512,6 @@ const Game = {
 
 document.addEventListener('DOMContentLoaded', () => Intro.start());
 </script>
+
 </body>
 </html>

@@ -12,12 +12,9 @@
     
     <style>
         :root {
-            /* Novas cores para o menu estilo retro */
-            --menu-title-yellow: #ffe600ff; /* Mantido do seu código */
+            --menu-title-yellow: #ffe600ff;
             --menu-text-white: #ffffff;
             --menu-shadow: #3a2725;
-            
-            /* Cores antigas (ainda usadas nos modais) */
             --ui-main: #000000;
             --ui-border-light: #000000;
             --text-light: #ffffff;
@@ -31,13 +28,13 @@
 
         body {
             margin: 0; padding: 20px; 
-            font-family: 'Press Start 2P', cursive; /* Aplicado globalmente para o estilo pixel */
+            font-family: 'Press Start 2P', cursive;
             background: url('https://i.redd.it/86qeqi3lbu8c1.gif') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-light); text-align: center;
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             overflow-x: hidden;
-            image-rendering: pixelated; /* Mantém a renderização pixelada */
+            image-rendering: pixelated;
         }
         
         .preloader {
@@ -54,6 +51,46 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        #trailer-container {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #trailer-container.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #game-trailer {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #skip-trailer-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 201;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid var(--menu-title-yellow);
+            color: var(--menu-title-yellow);
+            font-family: 'Press Start 2P', cursive;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+        #skip-trailer-btn:hover {
+            opacity: 1;
+            background: rgba(0,0,0,0.8);
+        }
+
         .game-container {
             position: relative; z-index: 2;
             padding: clamp(20px, 4vw, 30px);
@@ -61,96 +98,25 @@
             background: transparent;
             border: none;
             box-shadow: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease;
         }
-
-        /* ======================================= */
-        /* MUDANÇA PRINCIPAL NO TÍTULO           */
-        /* ======================================= */
-
-        h1 {
-            font-family: 'Press Start 2P', cursive;  /* Aplicando a fonte pixelada */
-            font-size: clamp(2.5rem, 8vw, 4rem);     /* Tamanho ajustado */
-            color: #FFCB05;                        /* Amarelo clássico do Pokémon */
-            letter-spacing: normal;                /* Reset para o padrão, ou ajuste se precisar */
-            
-            /* Contorno azul e sombra 3D, mantendo as cores que você gostou */
-            text-shadow: 
-                3px 0 0 #3466AF, -3px 0 0 #3466AF, 0 3px 0 #3466AF, 0 -3px 0 #3466AF,
-                2px 2px 0 #3466AF, -2px -2px 0 #3466AF, 2px -2px 0 #3466AF, -2px 2px 0 #3466AF,
-                6px 6px 0px #2a528a;
-                
-            margin: 0 0 50px;
-        }
-
-        /* Renomeamos .btn-group para .start-menu para clareza */
-        .start-menu { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 15px; /* Espaçamento entre as opções */
+        .game-container.is-visible {
+            opacity: 1;
+            visibility: visible;
         }
         
-        /* Estilo principal para as opções do menu (substitui o .btn antigo) */
-        .start-menu .menu-option {
-            background: none;
-            border: none;
-            box-shadow: none;
-            
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 1.8rem; /* Fonte maior para as opções */
-            color: var(--menu-text-white);
-            text-shadow: 3px 3px var(--menu-shadow);
-            text-transform: uppercase;
-            font-family: 'Press Start 2P', cursive; /* Aplicando a fonte pixelada */
-            
-            position: relative; /* Essencial para a setinha de seleção */
-            transition: all 0.2s ease;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 8 8"><path fill="%23ffc800" d="M0 0v8l4-4-4-4z"/></svg>') 8 8, auto;
-        }
-
-        /* Efeito ao passar o mouse ou focar */
+        h1 { font-family: 'Press Start 2P', cursive; font-size: clamp(2.5rem, 8vw, 4rem); color: #FFCB05; letter-spacing: normal; text-shadow: 3px 0 0 #3466AF, -3px 0 0 #3466AF, 0 3px 0 #3466AF, 0 -3px 0 #3466AF, 2px 2px 0 #3466AF, -2px -2px 0 #3466AF, 2px -2px 0 #3466AF, -2px 2px 0 #3466AF, 6px 6px 0px #2a528a; margin: 0 0 50px; }
+        .start-menu { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .start-menu .menu-option { background: none; border: none; box-shadow: none; padding: 10px 20px; text-decoration: none; font-size: 1.8rem; color: var(--menu-text-white); text-shadow: 3px 3px var(--menu-shadow); text-transform: uppercase; font-family: 'Press Start 2P', cursive; position: relative; transition: all 0.2s ease; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 8 8"><path fill="%23ffc800" d="M0 0v8l4-4-4-4z"/></svg>') 8 8, auto; }
         .start-menu .menu-option:hover,
-        .start-menu .menu-option:focus {
-            color: var(--menu-title-yellow); /* Texto fica amarelo */
-            transform: scale(1.1); /* Efeito de zoom leve */
-            outline: none;
-        }
-        
-        /* A setinha de seleção (a mágica acontece aqui) */
-        .start-menu .menu-option::before {
-            content: '▶'; /* O caractere de seta */
-            font-size: 1.2rem;
-            color: var(--menu-title-yellow);
-            position: absolute;
-            left: -40px; /* Posição à esquerda do texto */
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0; /* Fica invisível por padrão */
-            transition: opacity 0.2s ease;
-        }
-
-        /* Mostra a setinha quando o mouse está em cima */
+        .start-menu .menu-option:focus { color: var(--menu-title-yellow); transform: scale(1.1); outline: none; }
+        .start-menu .menu-option::before { content: '▶'; font-size: 1.2rem; color: var(--menu-title-yellow); position: absolute; left: -40px; top: 50%; transform: translateY(-50%); opacity: 0; transition: opacity 0.2s ease; }
         .start-menu .menu-option:hover::before,
-        .start-menu .menu-option:focus::before {
-            opacity: 1; /* Torna a seta visível */
-        }
-
-        /* ======================================= */
-        /* FIM DAS MUDANÇAS PRINCIPAIS           */
-        /* ======================================= */
-        
-        /* Estilos dos botões nos modais (mantidos como estavam) */
-        .btn {
-            background: var(--ui-main); color: var(--text-light);
-            border: 4px solid #000; box-shadow: inset 0 0 0 4px var(--ui-border-light);
-            padding: 15px 35px; text-decoration: none; font-size: 1.2rem;
-            transition: all 0.1s ease-in-out; cursor: pointer;
-            font-family: 'Press Start 2P', cursive; text-transform: uppercase;
-        }
+        .start-menu .menu-option:focus::before { opacity: 1; }
+        .btn { background: var(--ui-main); color: var(--text-light); border: 4px solid #000; box-shadow: inset 0 0 0 4px var(--ui-border-light); padding: 15px 35px; text-decoration: none; font-size: 1.2rem; transition: all 0.1s ease-in-out; cursor: pointer; font-family: 'Press Start 2P', cursive; text-transform: uppercase; }
         .btn:hover, .btn:focus-visible { background: var(--ui-border-light); color: #000; outline: none; }
-
-        /* ... (resto do seu CSS para modais, lista de personagens, etc., continua aqui sem alterações) ... */
         .modal-overlay { position: fixed; inset: 0; z-index: 102; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.8); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.is-visible { opacity: 1; visibility: visible; }
         .modal-box { background: var(--ui-main); border: 4px solid #000; box-shadow: inset 0 0 0 4px var(--ui-border-light); padding: 30px; max-width: 500px; width: 90%; color: var(--text-light); transform: scale(0.9); transition: transform 0.3s ease; }
@@ -183,6 +149,15 @@
     </style>
 </head>
 <body>
+    
+    <div id="trailer-container">
+        <video id="game-trailer" autoplay muted playsinline>
+            <source src="{{ asset('img/poke.mp4') }}" type="video/mp4">
+            Seu navegador não suporta a tag de vídeo.
+        </video>
+        <button id="skip-trailer-btn">PULAR TRAILER &gt;&gt;</button>
+    </div>
+
     <div class="preloader" id="preloader"><div class="preloader__spinner"></div><p>CARREGANDO...</p></div>
 
     <main class="game-container">
@@ -196,6 +171,7 @@
             </button>
              <a href="#" class="menu-option">EXIT</a>
         </nav>
+
         <section id="characterList" class="character-list-container">
             <div class="scroll-content" id="cardGroup">
                 @if($characters->isEmpty())
@@ -224,12 +200,15 @@
     <div class="modal-overlay" id="deleteModal"> <div class="modal-box"> <h3>APAGAR ARQUIVO</h3> <p id="deleteModalText" style="font-size: 1rem; line-height: 1.5; margin-bottom: 20px;">Tem certeza que deseja apagar este herói?</p> <div class="modal-actions"> <button class="btn btn--secondary" data-close-modal>Cancelar</button> <button class="btn btn--danger" id="confirmDeleteBtn">Apagar</button> </div> <div class="modal-message" id="deleteMessage"></div> </div> </div>
 
     <script>
-        // SEU SCRIPT CONTINUA AQUI EXATAMENTE IGUAL
         document.documentElement.classList.remove('no-js');
         document.addEventListener('DOMContentLoaded', () => {
             const app = {
                 ui: {
                     preloader: document.getElementById('preloader'),
+                    trailerContainer: document.getElementById('trailer-container'),
+                    gameTrailer: document.getElementById('game-trailer'),
+                    skipTrailerBtn: document.getElementById('skip-trailer-btn'),
+                    gameContainer: document.querySelector('.game-container'),
                     toggleBtn: document.getElementById('toggleListBtn'),
                     characterList: document.getElementById('characterList'),
                     cardGroup: document.getElementById('cardGroup'),
@@ -252,8 +231,43 @@
                     activeCard: null,
                 },
                 init() { this.bindEvents(); this.hidePreloader(); document.body.style.visibility = 'visible'; },
-                hidePreloader() { this.ui.preloader.classList.add('is-hidden'); },
-                bindEvents() { if (this.ui.toggleBtn) { this.ui.toggleBtn.addEventListener('click', () => this.handleToggleList()); } if (this.ui.cardGroup) { this.ui.cardGroup.addEventListener('click', (e) => { const editBtn = e.target.closest('.edit-btn'); const deleteBtn = e.target.closest('.delete-btn'); if (editBtn) this.openEditModal(editBtn.closest('.character-card')); if (deleteBtn) this.openDeleteModal(deleteBtn.closest('.character-card')); }); } this.ui.editModal.saveBtn.addEventListener('click', () => this.handleSaveEdit()); this.ui.deleteModal.confirmBtn.addEventListener('click', () => this.handleConfirmDelete()); document.querySelectorAll('[data-close-modal]').forEach(btn => { btn.addEventListener('click', (e) => { this.closeModal(e.target.closest('.modal-overlay')); }); }); },
+                
+                // =======================================
+                // LÓGICA DE AUTOPLAY RESTAURADA
+                // =======================================
+                hidePreloader() {
+                    this.ui.preloader.classList.add('is-hidden');
+                    // Tenta dar play no vídeo. 
+                    const playPromise = this.ui.gameTrailer.play();
+
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            // Se o navegador bloquear o autoplay por qualquer motivo...
+                            console.warn("Autoplay do vídeo foi bloqueado pelo navegador. Indo direto para o menu.");
+                            // ...pula o trailer e mostra o menu principal.
+                            this.startMainMenu();
+                        });
+                    }
+                },
+
+                bindEvents() {
+                    this.ui.gameTrailer.addEventListener('ended', () => this.startMainMenu());
+                    this.ui.skipTrailerBtn.addEventListener('click', () => this.startMainMenu());
+
+                    if (this.ui.toggleBtn) { this.ui.toggleBtn.addEventListener('click', () => this.handleToggleList()); }
+                    if (this.ui.cardGroup) { this.ui.cardGroup.addEventListener('click', (e) => { const editBtn = e.target.closest('.edit-btn'); const deleteBtn = e.target.closest('.delete-btn'); if (editBtn) this.openEditModal(editBtn.closest('.character-card')); if (deleteBtn) this.openDeleteModal(deleteBtn.closest('.character-card')); }); }
+                    this.ui.editModal.saveBtn.addEventListener('click', () => this.handleSaveEdit());
+                    this.ui.deleteModal.confirmBtn.addEventListener('click', () => this.handleConfirmDelete());
+                    document.querySelectorAll('[data-close-modal]').forEach(btn => { btn.addEventListener('click', (e) => { this.closeModal(e.target.closest('.modal-overlay')); }); });
+                },
+
+                startMainMenu() {
+                    if (this.ui.trailerContainer.classList.contains('is-hidden')) return;
+                    
+                    this.ui.trailerContainer.classList.add('is-hidden');
+                    this.ui.gameContainer.classList.add('is-visible');
+                },
+                
                 handleToggleList() { this.state.isListVisible = !this.state.isListVisible; this.ui.characterList.classList.toggle('is-visible', this.state.isListVisible); this.ui.toggleBtn.classList.toggle('is-active', this.state.isListVisible); this.ui.toggleBtn.textContent = this.state.isListVisible ? this.ui.toggleBtn.dataset.closeText : this.ui.toggleBtn.dataset.openText; if (this.state.isListVisible && !this.state.cardsAnimated) { this.animateCards(); this.state.cardsAnimated = true; } else if (!this.state.isListVisible) { this.ui.cardGroup.querySelectorAll('.character-card').forEach(card => { card.classList.remove('is-in-view'); }); this.state.cardsAnimated = false; } },
                 animateCards() { this.ui.cardGroup.querySelectorAll('.character-card').forEach((card, index) => { setTimeout(() => card.classList.add('is-in-view'), 100 * index); }); },
                 openModal(modal) { modal.classList.add('is-visible'); },
