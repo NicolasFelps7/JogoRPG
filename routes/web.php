@@ -27,10 +27,12 @@ Route::prefix('game')->name('character.')->group(function () {
     Route::get('/create', [GameController::class, 'create'])->name('create');
     Route::post('/store', [GameController::class, 'store'])->name('store');
 
-    // 🎓 Tutorial e Alocação de Pontos (ex: /game/tutorial/1)
+    // 🎓 Tutorial (ex: /game/tutorial/1)
     Route::get('/tutorial/{character}', [GameController::class, 'tutorial'])->name('tutorial');
-    Route::get('/allocate/{character}', [GameController::class, 'allocate'])->name('allocate');
-    Route::post('/allocate/{character}', [GameController::class, 'allocateStore'])->name('allocate.store');
+    
+    // As duas rotas a seguir foram removidas para desativar a página 'allocate'.
+    // Route::get('/allocate/{character}', [GameController::class, 'allocate'])->name('allocate');
+    // Route::post('/allocate/{character}', [GameController::class, 'allocateStore'])->name('allocate.store');
 
     // ⚔️ Fases da Batalha (ex: /game/play/1)
     Route::get('/play/{character}', [GameController::class, 'play'])->name('play');

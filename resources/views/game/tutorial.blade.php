@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caverna Sombria - Tutorial</title>
+    <title>Pokémon e a Coroa de Gelo - Tutorial</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,7 @@
         }
 
         .professor-sprite {
-            width: 280px; /* MUDANÇA AQUI: Aumentado para um tamanho "top" */
+            width: 280px;
             height: auto;
             position: relative;
             z-index: 2;
@@ -52,7 +52,7 @@
         .spotlight {
             position: absolute;
             bottom: 0;
-            width: 320px; /* MUDANÇA AQUI: Aumentado para combinar com o novo tamanho */
+            width: 320px;
             height: 60px;
             background-color: rgba(255, 255, 255, 0.6);
             border-radius: 50%;
@@ -64,7 +64,7 @@
             width: calc(100% - 20px);
             max-width: 1024px;
             height: 180px;
-            margin: 10px;
+            margin: 10px auto; /* Centraliza a caixa de diálogo */
             background: var(--dialog-bg);
             border: 8px solid var(--dialog-border-outer);
             box-shadow: inset 0 0 0 8px var(--dialog-border-inner);
@@ -104,11 +104,13 @@
     </footer>
 
 <script>
-// O SCRIPT CONTINUA O MESMO
 document.addEventListener('DOMContentLoaded', () => {
     const dialogContent = document.getElementById('dialogContent');
     const dialogBox = document.getElementById('dialogBox');
-    const finalRedirectURL = "{{ route('character.allocate', $character->id) }}";
+    
+    // ▼▼▼ AQUI ESTÁ A CORREÇÃO ▼▼▼
+    // O link agora aponta para a rota 'play' em vez de 'allocate'
+    const finalRedirectURL = "{{ route('character.play', $character->id) }}";
     
     const pages = [
         `Olá! Bem-vindo ao mundo dos monstros!`,

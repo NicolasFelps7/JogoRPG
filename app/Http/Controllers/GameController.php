@@ -21,7 +21,6 @@ class GameController extends Controller
      */
     public function store(Request $request)
     {
-        // ▼▼▼ ALTERAÇÃO 1: Adicionada validação para a escolha do pokémon inicial ▼▼▼
         $request->validate([
             'name' => 'required|min:3|max:30',
             'avatar' => 'required',
@@ -31,25 +30,21 @@ class GameController extends Controller
         $character = Character::create([
             'name' => $request->name,
             'avatar' => $request->avatar,
-            'hp' => 100, 'max_hp' => 100,
-            'mp' => 50, 'max_mp' => 50,
-            'attack' => 10, 'defense' => 10,
-            'speed' => 10, 'special_attack' => 10, 'special_defense' => 10,
-            'level' => 1, 'exp' => 0, 'gold' => 500,
+            'gold' => 50, // Ouro inicial
             'potions' => 3,
-            'pokeballs' => 0,
+            'pokeballs' => 5,
             'greatballs' => 0,
             'thunderstones' => 0,
         ]);
         
-        // ▼▼▼ ALTERAÇÃO 2: Chama a função para criar o pokémon inicial escolhido ▼▼▼
+        // Chama a função para criar o pokémon inicial escolhido
         $this->createInitialPokemon($character, $request->pokemon_choice);
 
         return redirect()->route('character.tutorial', $character->id);
     }
 
     /**
-     * ▼▼▼ NOVO MÉTODO PRIVADO: Cria o Pokémon inicial com base na escolha ▼▼▼
+     * Método privado para criar o Pokémon inicial com base na escolha.
      */
     private function createInitialPokemon(Character $character, string $choice)
     {
@@ -76,6 +71,7 @@ class GameController extends Controller
 
         if (isset($starters[$choice])) {
             $pokemonData = $starters[$choice];
+            // Associa o pokémon ao personagem
             $pokemonData['character_id'] = $character->id;
             $pokemonData['isFainted'] = false;
 
@@ -92,51 +88,12 @@ class GameController extends Controller
     }
 
     /**
-     * Mostra a tela de alocação de pontos.
-     */
-    public function allocate(Character $character)
-    {
-        return view('game.allocate', compact('character'));
-    }
-
-    /**
-     * Armazena os atributos distribuídos.
-     */
-    public function allocateStore(Request $request, Character $character)
-    {
-        $validated = $request->validate([
-            'hp' => 'required|integer|min:0', 'mp' => 'required|integer|min:0',
-            'attack' => 'required|integer|min:0', 'defense' => 'required|integer|min:0',
-            'speed' => 'required|integer|min:0', 'special_attack' => 'required|integer|min:0',
-            'special_defense' => 'required|integer|min:0',
-        ]);
-
-        $character->hp += $validated['hp'];
-        $character->mp += $validated['mp'];
-        $character->attack += $validated['attack'];
-        $character->defense += $validated['defense'];
-        $character->speed += $validated['speed'];
-        $character->special_attack += $validated['special_attack'];
-        $character->special_defense += $validated['special_defense'];
-        $character->max_hp = $character->hp;
-        $character->max_mp = $character->mp;
-        $character->save();
-        
-        return redirect()->route('character.play', $character->id);
-    }
-
-    /**
-     * ▼▼▼ NOVO MÉTODO PRIVADO: Para carregar a view de batalha com os dados corretos ▼▼▼
+     * Método privado para carregar a view de batalha com os dados corretos.
      */
     private function showPlayView(Character $character, string $viewName)
     {
-        // Carrega o personagem junto com seus pokémons
         $character->load('pokemons');
-
-        // Transforma a lista de pokémons em uma string JSON para o JavaScript
         $playerTeamJson = $character->pokemons->toJson();
-
-        // Envia os dados para a view
         return view($viewName, [
             'character' => $character,
             'playerTeamJson' => $playerTeamJson
@@ -144,7 +101,6 @@ class GameController extends Controller
     }
     
     // --- Fases do Jogo ---
-    // ▼▼▼ ALTERAÇÃO 3: Métodos de batalha agora usam a nova função para carregar os pokémons ▼▼▼
     public function play(Character $character)
     {
         return $this->showPlayView($character, 'game.play');
@@ -162,21 +118,58 @@ class GameController extends Controller
 
     /**
      * Salva o progresso do personagem vindo da batalha.
+     * ▼▼▼ MÉTODO TOTALMENTE CORRIGIDO ▼▼▼
      */
     public function saveProgress(Request $request, Character $character)
     {
-        // Valida os dados recebidos da batalha
+        // Validação completa dos dados que o JavaScript envia
         $validatedData = $request->validate([
-            'hp' => 'integer', 'mp' => 'integer', 'attack' => 'integer', 'defense' => 'integer',
-            'special_attack' => 'integer', 'special_defense' => 'integer', 'speed' => 'integer',
-            'level' => 'integer', 'exp' => 'integer', 'gold' => 'integer', 'potions' => 'integer',
-            'pokeballs' => 'integer', 'greatballs' => 'integer', 'thunderstones' => 'integer'
+            'level' => 'required|integer',
+            'hp' => 'required|numeric',
+            'mp' => 'required|numeric',
+            'xp' => 'required|integer',
+            'maxHp' => 'required|integer', // Recebe como maxHp (camelCase) do JS
+            'maxMp' => 'required|integer', // Recebe como maxMp (camelCase) do JS
+            'attack' => 'required|integer',
+            'defense' => 'required|integer',
+            'sp_attack' => 'required|integer',
+            'sp_defense' => 'required|integer',
+            'speed' => 'required|integer',
+            'gold' => 'required|integer',
+            'inventory' => 'required|array',
+            'inventory.potion' => 'required|integer',
+            'inventory.pokeball' => 'required|integer',
+            'inventory.greatball' => 'required|integer',
+            'inventory.thunderstone' => 'required|integer',
         ]);
-        
-        // Atualiza o personagem com os dados validados
-        $character->update($validatedData);
 
-        return response()->json(['success' => true]);
+        // 1. ATUALIZA DADOS DO PERSONAGEM (TRAINER)
+        $character->gold = $validatedData['gold'];
+        $character->potions = $validatedData['inventory']['potion'];
+        $character->pokeballs = $validatedData['inventory']['pokeball'];
+        $character->greatballs = $validatedData['inventory']['greatball'];
+        $character->thunderstones = $validatedData['inventory']['thunderstone'];
+        $character->save(); // Salva as alterações do personagem
+
+        // 2. ATUALIZA DADOS DO POKÉMON ATIVO
+        $mainPokemon = $character->pokemons()->first(); // Pega o primeiro pokémon da equipe (o que batalhou)
+        
+        if ($mainPokemon) {
+            $mainPokemon->level = $validatedData['level'];
+            $mainPokemon->hp = $validatedData['hp'];
+            $mainPokemon->mp = $validatedData['mp'];
+            $mainPokemon->xp = $validatedData['xp'];
+            $mainPokemon->max_hp = $validatedData['maxHp']; // Mapeia de 'maxHp' para 'max_hp'
+            $mainPokemon->max_mp = $validatedData['maxMp']; // Mapeia de 'maxMp' para 'max_mp'
+            $mainPokemon->attack = $validatedData['attack'];
+            $mainPokemon->defense = $validatedData['defense'];
+            $mainPokemon->sp_attack = $validatedData['sp_attack'];
+            $mainPokemon->sp_defense = $validatedData['sp_defense'];
+            $mainPokemon->speed = $validatedData['speed'];
+            $mainPokemon->save(); // Salva as alterações do pokémon
+        }
+
+        return response()->json(['success' => true, 'message' => 'Progresso salvo com sucesso!']);
     }
 
     /**
@@ -194,8 +187,10 @@ class GameController extends Controller
     public function updateStats(Request $request, Character $character)
     {
         $validatedData = $request->validate([
-            'gold' => 'sometimes|integer', 'potions' => 'sometimes|integer',
-            'pokeballs' => 'sometimes|integer', 'greatballs' => 'sometimes|integer',
+            'gold' => 'sometimes|integer',
+            'potions' => 'sometimes|integer',
+            'pokeballs' => 'sometimes|integer',
+            'greatballs' => 'sometimes|integer',
             'thunderstones' => 'sometimes|integer',
         ]);
 
@@ -203,13 +198,13 @@ class GameController extends Controller
             $character->update($validatedData);
             return response()->json([
                 'success' => true,
-                'message' => 'Progresso salvo com sucesso!',
-                'newStats' => $character->fresh()
+                'message' => 'Compra realizada!',
+                'newStats' => $character->fresh() // Retorna os dados atualizados
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ocorreu um erro no servidor ao salvar os dados.'
+                'message' => 'Erro ao processar a compra.'
             ], 500);
         }
     }
