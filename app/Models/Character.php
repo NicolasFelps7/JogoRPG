@@ -17,21 +17,26 @@ class Character extends Model
     protected $fillable = [
         'name',
         'avatar',
-        'level',
         'hp',
         'max_hp',
         'mp',
         'max_mp',
-        'attack',
-        'defense',
-        'special_attack',
-        'special_defense',
-        'speed',
-        'exp',
-        'gold',
-        'potions',      // <-- Necessário
-        'pokeballs',    // <-- Necessário
-        'greatballs',   // <-- Necessário
-        'thunderstones' // <-- Necessário
+        // ... outros campos que você tenha ...
+        'potions',
+        'pokeballs',
+        'greatballs',
+        'thunderstones',
     ];
+
+    // ▼▼▼ COPIE E COLE A FUNÇÃO ABAIXO AQUI DENTRO ▼▼▼
+    
+    /**
+     * Define a relação de que um Personagem (Character) pode ter muitos Pokémons.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pokemons()
+    {
+        return $this->hasMany(Pokemon::class);
+    }
 }

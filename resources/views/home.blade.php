@@ -152,7 +152,7 @@
     
     <div id="trailer-container">
         <video id="game-trailer" autoplay muted playsinline>
-            <source src="{{ asset('img/poke.mp4') }}" type="video/mp4">
+            <source src="{{ asset('img/gelo.mp4') }}" type="video/mp4">
             Seu navegador não suporta a tag de vídeo.
         </video>
         <button id="skip-trailer-btn">PULAR TRAILER &gt;&gt;</button>

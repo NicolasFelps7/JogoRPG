@@ -187,11 +187,11 @@
             <fieldset class="form-fieldset">
                 <legend class="form-legend">SEU POKÉMON INICIAL:</legend>
                 <div class="choice-gallery" id="pokemonGallery">
-                    <img src="https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif" alt="Gengar" class="choice-option" data-value="https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif">
-                    <img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyNjNqM3g3MTcwbnBhMTlucG82amY4aXh1Z2JkM2twYzlzcXNsbGl0eSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/HH2bb3Pjq5IB2/200.gif" alt="Pikachu" class="choice-option" data-value="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyNjNqM3g3MTcwbnBhMTlucG82amY4aXh1Z2JkM2twYzlzcXNsbGl0eSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/HH2bb3Pjq5IB2/200.gif">
-                    <img src="https://i.pinimg.com/originals/e9/38/d1/e938d18fc07a3ffd16b4864ef2f1308f.gif" alt="Snorlax" class="choice-option" data-value="https://i.pinimg.com/originals/e9/38/d1/e938d18fc07a3ffd16b4864ef2f1308f.gif">
+                    <img src="https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif" alt="Squirtle" class="choice-option" data-value="squirtle">
+                    <img src="https://i.gifer.com/origin/fe/fe4ebd8a9c0547e94000a9c759acf591_w200.gif" alt="Bulbasaur" class="choice-option" data-value="bulbasaur">
+                    <img src="https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif" alt="Pikachu" class="choice-option" data-value="pikachu">
                 </div>
-                <input type="hidden" name="initial_pokemon" id="pokemonInput" required>
+                <input type="hidden" name="pokemon_choice" id="pokemon_choice" required>
             </fieldset>
         </div>
         
@@ -214,7 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const avatarPreview = document.getElementById('avatarPreview');
 
     // --- ELEMENTOS DO POKÉMON INICIAL ---
-    const pokemonInput = document.getElementById('pokemonInput');
+    // ▼▼▼ ALTERAÇÃO AQUI ▼▼▼
+    // Agora seleciona o input correto com id 'pokemon_choice'
+    const pokemonInput = document.getElementById('pokemon_choice');
     const pokemonGallery = document.getElementById('pokemonGallery');
     const allPokemons = pokemonGallery.querySelectorAll('.choice-option');
 
@@ -223,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAvatarSelected = avatarInput.value !== '';
         const isPokemonSelected = pokemonInput.value !== '';
         
-        // Valida as 3 condições restantes
         submitBtn.disabled = !(isNameValid && isAvatarSelected && isPokemonSelected);
     };
 
@@ -249,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- LÓGICA DA ESCOLHA DO POKÉMON ---
+    // Nenhuma alteração necessária aqui, pois as variáveis já foram corrigidas acima
     pokemonGallery.addEventListener('click', (event) => {
         const clickedPokemon = event.target.closest('.choice-option');
         if (!clickedPokemon) return;
