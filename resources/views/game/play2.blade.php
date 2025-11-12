@@ -251,7 +251,7 @@ const moveDatabase = {
 };
 
 const Intro = {
-    storyContainer: document.getElementById('story-intro'), storyTextEl: document.getElementById('story-text'), stageTitleEl: document.getElementById('stage-title'), battleScreenEl: document.querySelector('.battle-screen'), typewriter(text, i = 0) { if (i < text.length) { this.storyTextEl.innerHTML += text.charAt(i); setTimeout(() => this.typewriter(text, i + 1), 50); } else { setTimeout(() => this.showStageTitle(), 2000); } }, showStageTitle() { this.stageTitleEl.classList.add('visible'); setTimeout(() => this.hideIntro(), 2500); }, hideIntro() { this.storyContainer.style.opacity = '1'; this.storyContainer.classList.add('hide-intro-animation'); this.storyContainer.addEventListener('animationend', () => { this.storyContainer.remove(); this.showBattleScreen(); }, { once: true }); }, showBattleScreen() { this.battleScreenEl.classList.add('visible'); Game.init(); }, start() { this.typewriter(`APÓS A VITÓRIA, {{ $character->name }} IR PARA DENTRO DA CAVERNA SOMBRIA...`); }
+    storyContainer: document.getElementById('story-intro'), storyTextEl: document.getElementById('story-text'), stageTitleEl: document.getElementById('stage-title'), battleScreenEl: document.querySelector('.battle-screen'), typewriter(text, i = 0) { if (i < text.length) { this.storyTextEl.innerHTML += text.charAt(i); setTimeout(() => this.typewriter(text, i + 1), 50); } else { setTimeout(() => this.showStageTitle(), 2000); } }, showStageTitle() { this.stageTitleEl.classList.add('visible'); setTimeout(() => this.hideIntro(), 2500); }, hideIntro() { this.storyContainer.style.opacity = '1'; this.storyContainer.classList.add('hide-intro-animation'); this.storyContainer.addEventListener('animationend', () => { this.storyContainer.remove(); this.showBattleScreen(); }, { once: true }); }, showBattleScreen() { this.battleScreenEl.classList.add('visible'); Game.init(); }, start() { this.typewriter(`APÓS UMA BATALHA ÉPICA, {{ $character->name }} ENTRA PARA DENTRO DA CAVERNA SOMBRIA, EM BUSCA DA COROA...`); }
 };
 
 const Game = {
@@ -261,9 +261,9 @@ const Game = {
         inventory: { potion: parseInt("{{ $character->potions ?? 0 }}", 10), pokeball: parseInt("{{ $character->pokeballs ?? 0 }}", 10), greatball: parseInt("{{ $character->greatballs ?? 0 }}", 10), thunderstone: parseInt("{{ $character->thunderstones ?? 0 }}", 10) },
         enemy: {},
         enemies: [
-            { name:"Rattata", hp: 80, attack: 30, defense: 30, xp: 150, gold: 75, level: 6, img:"{{ asset('img/miguel.gif') }}" },
-            { name:"Onix", hp: 90, attack: 30, defense: 50, xp: 220, gold: 100, level: 7, img:"{{ asset('img/oni.gif') }}" },
-            { name:"Snorlax", hp: 100, attack: 30, defense: 35, xp: 500, gold: 250, level: 8, img:"{{ asset('img/sno.gif') }}" }
+            { name:"Rattata", hp: 80, attack: 20, defense: 30, xp: 0, gold: 75, level: 6, img:"{{ asset('img/miguel.gif') }}" },
+            { name:"Onix", hp: 90, attack: 20, defense: 50, xp: 0, gold: 100, level: 7, img:"{{ asset('img/oni.gif') }}" },
+            { name:"Snorlax", hp: 100, attack: 20, defense: 35, xp: 0, gold: 250, level: 8, img:"{{ asset('img/sno.gif') }}" }
         ],
         currentEnemyIndex: 0, gameState: 'PLAYER_TURN', menuState: 'main', activeBagItemIndex: 0, activeTeamListIndex: 0,
     },

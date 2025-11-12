@@ -323,17 +323,13 @@
         </div>
         <div>
             <h2>Colaboradores</h2>
+            <p>Senai</p>
             <p>Neil</p>
-        </div>
-        <div>
-            <h2>Agradecimentos Especiais</h2>
-            <p>Neil</p>
-            <p></p>
         </div>
         <div>
             <h2>Assets e Inspiração</h2>
-            <p>Pokémon (Nintendo)</p>
-            <p>Final Fantasy (Square Enix)</p>
+            <p>Pokémon (Fire Red)</p>
+            <p>Ramon</p>
         </div>
         <div style="margin-top: 80px;">
             <p>Obrigado por jogar!</p>
@@ -363,9 +359,9 @@ const Game = {
         inventory: { potion: parseInt("{{ $character->potions ?? 0 }}", 10), pokeball: parseInt("{{ $character->pokeballs ?? 0 }}", 10), greatball: parseInt("{{ $character->greatballs ?? 0 }}", 10), thunderstone: parseInt("{{ $character->thunderstones ?? 0 }}", 10) },
         enemy: {},
         enemies: [
-            { name:"Charizard", level: 10, hp: 50, attack: 10, defense: 30, xp: 150, gold: 75, img:"{{ asset('img/cha.gif') }}" },
-            { name:"Solgaleo", level: 12, hp: 50, attack: 10, defense: 18, xp: 220, gold: 100, img:"{{ asset('img/sol.png') }}" },
-            { name:"Rayquaza", level: 15, hp: 50, attack: 10, defense: 35, xp: 500, gold: 250, img:"{{ asset('img/ray.png') }}" }
+            { name:"Charizard", level: 10, hp: 120, attack: 20, defense: 30, xp: 1, gold: 75, img:"{{ asset('img/cha.gif') }}" },
+            { name:"Solgaleo", level: 12, hp: 130, attack: 20, defense: 18, xp: 1, gold: 100, img:"{{ asset('img/sol.png') }}" },
+            { name:"Rayquaza", level: 15, hp: 150, attack: 20, defense: 35, xp: 1, gold: 250, img:"{{ asset('img/ray.png') }}" }
         ],
         currentEnemyIndex: 0, gameState: 'PLAYER_TURN', menuState: 'main', activeBagItemIndex: 0, activeTeamListIndex: 0,
     },

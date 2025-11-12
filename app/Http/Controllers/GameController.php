@@ -30,7 +30,7 @@ class GameController extends Controller
         $character = Character::create([
             'name' => $request->name,
             'avatar' => $request->avatar,
-            'gold' => 50, // Ouro inicial
+            'gold' => 200, // Ouro inicial
             'potions' => 3,
             'pokeballs' => 5,
             'greatballs' => 0,
@@ -52,19 +52,19 @@ class GameController extends Controller
             'squirtle' => [
                 'name' => 'Squirtle', 'hp' => 44, 'maxHp' => 44, 'mp' => 50, 'maxMp' => 50,
                 'attack' => 48, 'defense' => 65, 'sp_attack' => 50, 'sp_defense' => 64, 'speed' => 43,
-                'level' => 5, 'xp' => 0, 'xpToNextLevel' => 40,
+                'level' => 5, 'xp' => 0, 'xpToNextLevel' => 1,
                 'sprite' => 'https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif'
             ],
             'bulbasaur' => [
                 'name' => 'Bulbasaur', 'hp' => 45, 'maxHp' => 45, 'mp' => 50, 'maxMp' => 50,
                 'attack' => 49, 'defense' => 49, 'sp_attack' => 65, 'sp_defense' => 65, 'speed' => 45,
-                'level' => 5, 'xp' => 0, 'xpToNextLevel' => 40,
+                'level' => 5, 'xp' => 0, 'xpToNextLevel' => 1,
                 'sprite' => 'https://i.gifer.com/origin/fe/fe4ebd8a9c0547e94000a9c759acf591_w200.gif'
             ],
             'pikachu' => [
                 'name' => 'Pikachu', 'hp' => 35, 'maxHp' => 35, 'mp' => 50, 'maxMp' => 50,
                 'attack' => 55, 'defense' => 40, 'sp_attack' => 50, 'sp_defense' => 50, 'speed' => 90,
-                'level' => 5, 'xp' => 0, 'xpToNextLevel' => 40,
+                'level' => 5, 'xp' => 0, 'xpToNextLevel' => 1,
                 'sprite' => 'https://i.pinimg.com/originals/9f/b1/25/9fb125f1fedc8cc62ab5b20699ebd87d.gif'
             ]
         ];
@@ -118,7 +118,6 @@ class GameController extends Controller
 
     /**
      * Salva o progresso do personagem vindo da batalha.
-     * ▼▼▼ MÉTODO TOTALMENTE CORRIGIDO ▼▼▼
      */
     public function saveProgress(Request $request, Character $character)
     {

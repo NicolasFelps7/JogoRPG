@@ -32,9 +32,6 @@
         position: fixed; inset: 0; background-color: #000; color: #fff;
         display: flex; flex-direction: column; justify-content: center; align-items: center;
         z-index: 200; padding: 20px; opacity: 1; transition: none; overflow: hidden;
-        /* Novas decorações */
-        border: 10px solid #a0a0a0; /* Borda externa */
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.8) inset, 0 0 0 5px #ffcb05; /* Efeito de borda interna e externa */
     }
     #story-intro.hide-intro-animation { animation: hide-intro-up 1.5s forwards ease-in-out; }
     @keyframes hide-intro-up { 0% { transform: translateY(0); opacity: 1; } 50% { opacity: 0.5; } 100% { transform: translateY(-100%); opacity: 0; visibility: hidden; } }
@@ -43,8 +40,6 @@
         text-shadow: 2px 2px #000; z-index: 10;
         background: rgba(0,0,0,0.7); /* Fundo mais escuro para o texto */
         padding: 20px 30px; border-radius: 8px;
-        border: 3px solid #ffcb05; /* Borda amarela */
-        box-shadow: 0 0 15px rgba(255, 203, 5, 0.6); /* Brilho amarelado */
         margin-top: 20px; /* Espaço para as pokebolas */
         opacity: 0;
         transform: scale(0.8);
@@ -52,15 +47,15 @@
     }
     #story-text.visible { opacity: 1; transform: scale(1); }
 
-    #stage-title { font-size: 3rem; color: #3b4cca; /* Azul Pokémon */ margin-top: 40px; opacity: 0; transform: scale(0.5); text-shadow: 4px 4px #000; z-index: 10; }
+    #stage-title { font-size: 3rem; color: #44bbf6; /* Azul Pokémon */ margin-top: 40px; opacity: 0; transform: scale(0.5); text-shadow: 4px 4px #000; z-index: 10; }
     #stage-title.visible { animation: stage-intro 1.5s forwards; }
 
     /* Estilo e animação para as Pokebolas na introdução */
     .intro-pokeball-container {
         position: absolute;
-        top: 20%; /* Posição inicial */
+        top: 10%; /* Posição inicial */
         display: flex;
-        gap: 15px; /* Espaçamento entre as pokebolas */
+        gap: 12px; /* Espaçamento entre as pokebolas */
         z-index: 150;
         opacity: 0;
         transform: translateY(-50px);
@@ -385,7 +380,10 @@ const Intro = {
             }, index * 300); // Atraso para cada pokebola
         });
         // Após as pokebolas, mostra o texto
-        setTimeout(() => this.typewriter(`A AVENTURA DE {{ $character->name }} COMEÇA...`), pokeballs.length * 300 + 500);
+        setTimeout(() => this.typewriter(`Nas terras congeladas de Glacia,{{ $character->name }} inicia sua Aventura
+        Em busca da coroa de gelo e apenas o poder dos Pokémon pode detê-lo.
+
+Prepare-se......`), pokeballs.length * 300 + 500);
     },
 
     typewriter(text, i = 0) {
@@ -426,7 +424,7 @@ const Game = {
         playerTeam: {!! $playerTeamJson !!},
         inventory: { potion: parseInt("{{ $character->potions ?? 0 }}", 10), pokeball: parseInt("{{ $character->pokeballs ?? 0 }}", 10), greatball: parseInt("{{ $character->greatballs ?? 0 }}", 10), thunderstone: parseInt("{{ $character->thunderstones ?? 0 }}", 10) },
         enemy: {},
-        enemies: [ { name: "Charmander", hp: 75, attack: 20, defense: 25, xp: 40, gold: 25, level: 1, img: "https://pa1.aminoapps.com/6777/acc878aee328657849329f25d55198da55da639f_00.gif" }, { name: "Totodile", hp: 75, attack: 20, defense: 25, xp: 40, gold: 25, level: 1, img: "https://media.tenor.com/lr6evdW49pcAAAAj/totodile-pokemon.gif" }, { name: "Squirtle", hp: 75, attack: 20, defense: 25, xp: 40, gold: 25, level: 1, img: "https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif" } ],
+        enemies: [ { name: "Charmander", hp: 75, attack: 20, defense: 25, xp: 0, gold: 100, level: 1, img: "https://pa1.aminoapps.com/6777/acc878aee328657849329f25d55198da55da639f_00.gif" }, { name: "Totodile", hp: 75, attack: 20, defense: 25, xp: 0, gold: 100, level: 1, img: "https://media.tenor.com/lr6evdW49pcAAAAj/totodile-pokemon.gif" }, { name: "Squirtle", hp: 75, attack: 20, defense: 25, xp: 0, gold: 100, level: 1, img: "https://i.gifer.com/origin/d8/d83e9951f28fc811c1166b16dcaec930_w200.gif" } ],
         currentEnemyIndex: 0, gameState: 'PLAYER_TURN', menuState: 'main', activeBagItemIndex: 0, activeTeamListIndex: 0,
     },
     get activePokemon() { return this.state.playerTeam[0]; },
