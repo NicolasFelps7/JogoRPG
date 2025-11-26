@@ -9,32 +9,21 @@ class Character extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'avatar',
-        'hp',
-        'max_hp',
-        'mp',
-        'max_mp',
-        // ... outros campos que você tenha ...
+        'gold',
         'potions',
         'pokeballs',
         'greatballs',
-        'thunderstones',
+        'thunderstones'
     ];
 
-    // ▼▼▼ COPIE E COLE A FUNÇÃO ABAIXO AQUI DENTRO ▼▼▼
-    
-    /**
-     * Define a relação de que um Personagem (Character) pode ter muitos Pokémons.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
     public function pokemons()
     {
         return $this->hasMany(Pokemon::class);
